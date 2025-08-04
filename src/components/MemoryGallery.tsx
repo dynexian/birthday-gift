@@ -92,7 +92,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
     >
       <div className="max-w-6xl mx-auto">
         <motion.h2
-          className="text-4xl md:text-6xl font-bold text-center mb-12"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-8 md:mb-12 px-4"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -108,7 +108,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
 
         {/* Navigation Pills */}
         <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-12 px-4"
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
@@ -117,7 +117,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
             <motion.button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              className={`px-4 md:px-6 py-2 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all duration-300 ${
                 activeSection === section.id
                   ? 'bg-white shadow-xl scale-110 text-purple-600'
                   : 'bg-white/60 hover:bg-white/80 text-gray-700'
@@ -157,10 +157,10 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                     >
                       {section.emoji}
                     </motion.div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
                       {section.title}
                     </h3>
-                    <p className="text-lg text-gray-600 font-medium">
+                    <p className="text-base md:text-lg text-gray-600 font-medium">
                       {section.subtitle}
                     </p>
                   </div>

@@ -43,7 +43,7 @@
   }
 
   .countdown-digit {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
     @apply drop-shadow-lg;
     font-family: 'Playfair Display', serif;
     /* Use solid color instead of gradient for better visibility */
@@ -51,6 +51,11 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     /* Remove transparent background that was causing issues */
     background: none;
+    /* Ensure text doesn't break and stays centered */
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .stage-container {

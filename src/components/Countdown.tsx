@@ -31,24 +31,26 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
 
   if (isExpired) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center"
-      >
-        <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-nature-500 to-sky-500 bg-clip-text text-transparent mb-4">
-          🎉 Time's Up! 🎉
-        </h2>
-        <p className="text-xl md:text-2xl text-nature-600 font-medium">
-          The moment has arrived!
-        </p>
-      </motion.div>
+      <div className="min-h-screen flex flex-col justify-center items-center space-y-8 px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 bg-clip-text text-transparent mb-4">
+            🎉 Time's Up! 🎉
+          </h2>
+          <p className="text-xl md:text-2xl text-gray-600 font-medium">
+            The moment has arrived! Let's celebrate! 🎂
+          </p>
+        </motion.div>
+      </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center space-y-8 px-4">
-      {/* Welcome Message */}
+      {/* Countdown Section Header */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,28 +58,29 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
         className="text-center mb-8"
       >
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
-          🎉 Happy Birthday! 🎉
+          🕐 Countdown to Your Special Moment 🕐
         </h1>
         <p className="text-xl md:text-2xl text-gray-700 font-medium max-w-2xl mx-auto leading-relaxed">
-          Get ready for something special...
+          The celebration begins in...
         </p>
       </motion.div>
       
+      {/* Countdown Timer */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto"
+        transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 max-w-4xl mx-auto"
       >
         {timeUnits.map((unit, index) => (
           <motion.div
             key={unit.label}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="bg-white/20 backdrop-blur-md rounded-2xl p-6 border border-white/30 shadow-xl"
+            transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+            className="bg-white/20 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/30 shadow-xl min-w-[100px] md:min-w-[120px]"
           >
-            <div className="relative h-24 flex items-center justify-center overflow-hidden">
+            <div className="relative h-16 md:h-20 lg:h-24 flex items-center justify-center overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={unit.value}
@@ -95,8 +98,8 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-              className="text-nature-600 font-semibold text-lg mt-2 tracking-wide"
+              transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
+              className="text-gray-600 font-semibold text-sm md:text-lg mt-2 tracking-wide text-center"
             >
               {unit.label}
             </motion.p>
@@ -108,12 +111,12 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
       <motion.div
         initial={{ width: 0, opacity: 0 }}
         animate={{ width: '100%', opacity: 1 }}
-        transition={{ duration: 1.2, delay: 0.5 }}
+        transition={{ duration: 1.2, delay: 1.5 }}
         className="max-w-md mx-auto"
       >
         <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
           <motion.div
-            className="h-full bg-gradient-to-r from-nature-400 to-sky-400 rounded-full"
+            className="h-full bg-gradient-to-r from-green-400 to-blue-400 rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: `${(seconds % 60) * (100 / 60)}%` }}
             transition={{ duration: 0.5 }}

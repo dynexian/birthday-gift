@@ -38,13 +38,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
     return () => clearInterval(timer);
   }, [messages.length]);
 
-  // Auto-complete after viewing all messages
-  useEffect(() => {
-    if (isComplete) {
-      const timer = setTimeout(() => onComplete(), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isComplete, onComplete]);
+  // Remove auto-complete - let user click the button to proceed
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-sky-50 via-purple-50 to-pink-50">
@@ -77,8 +71,8 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="h-screen flex items-center justify-center px-8">
-        <div className="text-center max-w-4xl">
+      <div className="h-screen flex items-center justify-center px-4 md:px-8">
+        <div className="text-center max-w-5xl w-full">
           <motion.div
             key={currentMessage} // Force re-render on message change
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -87,14 +81,14 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <motion.p
-              className="text-3xl md:text-5xl lg:text-6xl leading-relaxed font-medium text-purple-600"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-relaxed font-medium text-purple-600 break-words"
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               {messages[currentMessage]}
             </motion.p>
             
-            <div className="mt-8 text-lg text-purple-500 font-semibold">
+            <div className="mt-6 md:mt-8 text-base md:text-lg text-purple-500 font-semibold">
               {currentMessage + 1} of {messages.length}
             </div>
           </motion.div>

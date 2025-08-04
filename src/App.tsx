@@ -23,6 +23,9 @@ const App: React.FC = () => {
   const targetDate = new Date();
   targetDate.setSeconds(targetDate.getSeconds() + 5); // 120 seconds from now for demo
 
+  // Set birth date for age calculation (you can customize this)
+  const birthDate = new Date('1995-08-04'); // Example: August 4, 1995 - customize this date!
+
   // Add keyboard listener to reset to countdown (press 'R' key)
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -96,7 +99,7 @@ const App: React.FC = () => {
             exit="exit"
             transition={{ duration: 1, ease: 'easeInOut' }}
           >
-            <EntryAnimation onComplete={goToNextStage} onReset={restartCountdown} />
+            <EntryAnimation onComplete={goToNextStage} onReset={restartCountdown} birthDate={birthDate} />
           </motion.div>
         )}
         

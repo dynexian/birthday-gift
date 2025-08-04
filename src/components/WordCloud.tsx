@@ -78,7 +78,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl font-bold text-center pt-20 pb-10"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-16 md:pt-20 pb-8 md:pb-10 px-4"
           style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             WebkitBackgroundClip: 'text',
