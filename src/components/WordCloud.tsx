@@ -8,24 +8,39 @@ interface WordCloudProps {
 const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
   const [showButton, setShowButton] = useState(false);
   const [interactedWords, setInteractedWords] = useState<Set<number>>(new Set());
+  const [hoveredWord, setHoveredWord] = useState<number | null>(null);
 
   const words = [
-    { text: "Kind", color: "#FF6B6B", size: "text-3xl", weight: 1 },
-    { text: "Brave", color: "#4ECDC4", size: "text-5xl", weight: 2 },
-    { text: "Funny", color: "#45B7D1", size: "text-4xl", weight: 1.5 },
-    { text: "Gentle", color: "#FFA07A", size: "text-3xl", weight: 1 },
-    { text: "Magical", color: "#98D8C8", size: "text-6xl", weight: 3 },
-    { text: "Caring", color: "#F7DC6F", size: "text-4xl", weight: 1.5 },
-    { text: "Creative", color: "#BB8FCE", size: "text-5xl", weight: 2 },
-    { text: "Loyal", color: "#85C1E9", size: "text-4xl", weight: 1.5 },
-    { text: "Warm", color: "#F8C471", size: "text-3xl", weight: 1 },
-    { text: "Beautiful", color: "#F1948A", size: "text-6xl", weight: 3 },
-    { text: "Strong", color: "#82E0AA", size: "text-5xl", weight: 2 },
-    { text: "Radiant", color: "#D7BDE2", size: "text-4xl", weight: 1.5 },
-    { text: "Wise", color: "#AED6F1", size: "text-3xl", weight: 1 },
-    { text: "Inspiring", color: "#F8D7DA", size: "text-5xl", weight: 2 },
-    { text: "Joyful", color: "#D5F4E6", size: "text-4xl", weight: 1.5 },
+    { text: "Kind", color: "#FF6B6B", size: "text-3xl", weight: 1, depth: 0.8 },
+    { text: "Brave", color: "#4ECDC4", size: "text-5xl", weight: 2, depth: 1.2 },
+    { text: "Funny", color: "#45B7D1", size: "text-4xl", weight: 1.5, depth: 1.0 },
+    { text: "Gentle", color: "#FFA07A", size: "text-3xl", weight: 1, depth: 0.7 },
+    { text: "Magical", color: "#98D8C8", size: "text-6xl", weight: 3, depth: 1.5 },
+    { text: "Caring", color: "#F7DC6F", size: "text-4xl", weight: 1.5, depth: 0.9 },
+    { text: "Creative", color: "#BB8FCE", size: "text-5xl", weight: 2, depth: 1.3 },
+    { text: "Loyal", color: "#85C1E9", size: "text-4xl", weight: 1.5, depth: 1.1 },
+    { text: "Warm", color: "#F8C471", size: "text-3xl", weight: 1, depth: 0.8 },
+    { text: "Beautiful", color: "#F1948A", size: "text-6xl", weight: 3, depth: 1.4 },
+    { text: "Strong", color: "#82E0AA", size: "text-5xl", weight: 2, depth: 1.2 },
+    { text: "Radiant", color: "#D7BDE2", size: "text-4xl", weight: 1.5, depth: 1.0 },
+    { text: "Wise", color: "#AED6F1", size: "text-3xl", weight: 1, depth: 0.9 },
+    { text: "Inspiring", color: "#F8D7DA", size: "text-5xl", weight: 2, depth: 1.3 },
+    { text: "Joyful", color: "#D5F4E6", size: "text-4xl", weight: 1.5, depth: 1.1 },
   ];
+
+  // Stable background particles
+  const backgroundParticles = Array.from({ length: 20 }, (_, i) => {
+    const seed = i * 142.857;
+    return {
+      size: 3 + (Math.sin(seed) * 4 + 4), // 3-7px
+      top: Math.abs(Math.sin(seed * 2)) * 100,
+      left: Math.abs(Math.sin(seed * 3)) * 100,
+      duration: 15 + (Math.sin(seed * 4) * 10 + 10), // 15-25s
+      delay: Math.abs(Math.sin(seed * 5)) * 8,
+      opacity: 0.1 + Math.abs(Math.sin(seed * 6)) * 0.3, // 0.1-0.4
+      color: words[i % words.length].color,
+    };
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,136 +73,273 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
     return position;
   };
 
-  const getFloatingAnimation = (weight: number) => ({
-    y: [0, -15 * weight, 5, 0],
-    x: [0, Math.random() * 8 - 4, 0],
-    rotate: [0, Math.random() * 6 - 3, 0],
-  });
+  const getFloatingAnimation = (weight: number, index: number) => {
+    // Use deterministic values based on index for stable animations
+    const seed = index * 67.829;
+    const xMovement = Math.sin(seed) * 8; // -8 to 8
+    const rotateAmount = Math.sin(seed * 2) * 4; // -4 to 4 degrees
+    
+    return {
+      y: [0, -12 * weight, 3, 0],
+      x: [0, xMovement, 0],
+      rotate: [0, rotateAmount, 0],
+    };
+  };
+
+  const getDepthStyles = (depth: number, isHovered: boolean, isInteracted: boolean) => {
+    const baseScale = isHovered ? 1.8 : 1;
+    const interactedScale = isInteracted ? 1.1 : 1;
+    
+    return {
+      transform: `translateZ(${depth * 50}px) scale(${baseScale * interactedScale})`,
+      filter: `blur(${Math.max(0, (1 - depth) * 2)}px) brightness(${0.7 + depth * 0.5})`,
+      textShadow: `
+        2px 2px 4px rgba(0,0,0,${0.3 + depth * 0.2}),
+        0 0 ${depth * 20}px rgba(255,255,255,0.3),
+        0 0 ${depth * 40}px currentColor
+      `,
+    };
+  };
 
   const handleWordClick = (index: number) => {
     const newInteracted = new Set(interactedWords);
     newInteracted.add(index);
     setInteractedWords(newInteracted);
+    
+    // Create ripple effect for clicked words
+    const wordElement = document.getElementById(`word-${index}`);
+    if (wordElement) {
+      wordElement.style.animation = 'none';
+      setTimeout(() => {
+        wordElement.style.animation = 'pulse 0.6s ease-out';
+      }, 10);
+    }
+  };
+
+  const handleWordHover = (index: number, isHovering: boolean) => {
+    setHoveredWord(isHovering ? index : null);
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100"
+         style={{ perspective: '1000px' }}>
       
-      <div className="absolute inset-0">
+      {/* Stable Background Particles */}
+      {backgroundParticles.map((particle, i) => (
+        <motion.div
+          key={`particle-${i}`}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            top: `${particle.top}%`,
+            left: `${particle.left}%`,
+            background: `radial-gradient(circle, ${particle.color}${Math.floor(particle.opacity * 255).toString(16)}, transparent)`,
+            opacity: particle.opacity,
+          }}
+          animate={{
+            y: [0, -50, 0],
+            scale: [0.5, 1.2, 0.5],
+            opacity: [particle.opacity * 0.3, particle.opacity, particle.opacity * 0.3],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
+
+      {/* Depth-based word layers */}
+      <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
         <motion.h2
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-16 md:pt-20 pb-8 md:pb-10 px-4"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-16 md:pt-20 pb-8 md:pb-10 px-4 relative z-20"
           style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
+            textShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
           }}
         >
           These are words that describe you...
         </motion.h2>
 
-        {words.map((word, index) => (
-          <motion.div
-            key={word.text}
-            className={`absolute font-bold cursor-pointer ${word.size}`}
-            style={{
-              ...getRandomPosition(index),
-              color: word.color,
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-              zIndex: 10,
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              ...getFloatingAnimation(word.weight),
-            }}
-            transition={{
-              duration: 1.5,
-              delay: index * 0.2,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-            whileHover={{
-              scale: 1.5,
-              rotate: 360,
-              transition: { duration: 0.5 },
-            }}
-            onClick={() => handleWordClick(index)}
-          >
-            {word.text}
+        {words.map((word, index) => {
+          const isHovered = hoveredWord === index;
+          const isInteracted = interactedWords.has(index);
+          const position = getRandomPosition(index);
+          
+          return (
             <motion.div
-              className="absolute -inset-2"
-              initial={{ opacity: 0 }}
-              whileHover={{ opacity: 1 }}
+              key={word.text}
+              id={`word-${index}`}
+              className={`absolute font-bold cursor-pointer ${word.size} select-none`}
               style={{
-                background: `radial-gradient(circle, ${word.color}20 0%, transparent 70%)`,
-                borderRadius: '50%',
+                ...position,
+                color: word.color,
+                zIndex: Math.floor(word.depth * 10) + 10,
+                ...getDepthStyles(word.depth, isHovered, isInteracted),
               }}
-            />
-          </motion.div>
-        ))}
-
-        {/* Floating orbs */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={`orb-${i}`}
-            className="absolute rounded-full opacity-30"
-            style={{
-              width: `${Math.random() * 100 + 50}px`,
-              height: `${Math.random() * 100 + 50}px`,
-              background: `radial-gradient(circle, ${words[i % words.length].color}40, transparent)`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, Math.random() * 200 - 100, 0],
-              y: [0, Math.random() * 200 - 100, 0],
-              scale: [1, 1.5, 1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 5,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
+              initial={{ 
+                opacity: 0, 
+                scale: 0,
+                rotateY: -180,
+                z: word.depth * -100,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                rotateY: 0,
+                z: 0,
+                ...getFloatingAnimation(word.weight, index),
+              }}
+              transition={{
+                duration: 1.8,
+                delay: index * 0.15,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+                rotateY: { duration: 1.8, delay: index * 0.15, repeat: 0 }
+              }}
+              whileHover={{
+                scale: 1.8,
+                rotateZ: 8,
+                transition: { 
+                  duration: 0.4, 
+                  ease: "easeOut",
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 15
+                },
+              }}
+              onHoverStart={() => handleWordHover(index, true)}
+              onHoverEnd={() => handleWordHover(index, false)}
+              onClick={() => handleWordClick(index)}
+            >
+              {word.text}
+              
+              {/* Enhanced hover effect with depth */}
+              <motion.div
+                className="absolute -inset-4 rounded-full pointer-events-none"
+                initial={{ opacity: 0, scale: 0 }}
+                whileHover={{ 
+                  opacity: 1, 
+                  scale: 1.2,
+                  background: [
+                    `radial-gradient(circle, ${word.color}10 0%, transparent 70%)`,
+                    `radial-gradient(circle, ${word.color}30 0%, transparent 70%)`,
+                    `radial-gradient(circle, ${word.color}10 0%, transparent 70%)`,
+                  ]
+                }}
+                transition={{ 
+                  duration: 0.6,
+                  background: { duration: 2, repeat: Infinity }
+                }}
+              />
+              
+              {/* Interaction sparkle */}
+              {isInteracted && (
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 3
+                  }}
+                >
+                  ✨
+                </motion.div>
+              )}
+            </motion.div>
+          );
+        })}
       </div>
 
       {showButton && (
         <motion.div
           className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 50, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ 
+            duration: 1,
+            type: "spring",
+            stiffness: 200,
+            damping: 20
+          }}
         >
           <motion.button
             onClick={onComplete}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full text-xl font-semibold shadow-lg hover:shadow-xl"
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-10 py-5 rounded-full text-xl font-semibold shadow-2xl relative overflow-hidden"
+            whileHover={{ 
+              scale: 1.15, 
+              boxShadow: "0 20px 60px rgba(147, 51, 234, 0.4)",
+              transition: { duration: 0.3 }
+            }}
             whileTap={{ scale: 0.95 }}
             animate={{
               boxShadow: [
-                "0 0 20px rgba(147, 51, 234, 0.5)",
-                "0 0 40px rgba(147, 51, 234, 0.8)",
-                "0 0 20px rgba(147, 51, 234, 0.5)",
+                "0 0 30px rgba(147, 51, 234, 0.3)",
+                "0 0 60px rgba(147, 51, 234, 0.6)",
+                "0 0 30px rgba(147, 51, 234, 0.3)",
               ],
             }}
             transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse",
+              boxShadow: {
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }
             }}
           >
-            Let's continue ✨
+            <motion.span
+              className="relative z-10"
+              animate={{ 
+                textShadow: [
+                  "0 0 10px rgba(255,255,255,0.5)",
+                  "0 0 20px rgba(255,255,255,0.8)",
+                  "0 0 10px rgba(255,255,255,0.5)",
+                ]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            >
+              Let's continue ✨
+            </motion.span>
+            
+            {/* Animated background shimmer */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20"
+              animate={{
+                x: ["-100%", "100%"],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 1,
+              }}
+            />
           </motion.button>
         </motion.div>
       )}
+      
+      {/* Custom CSS for pulse animation */}
+      <style>{`
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.3); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
 };

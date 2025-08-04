@@ -148,20 +148,23 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
               </motion.div>
               
               <motion.div 
-                className="bg-white/60 rounded-xl p-3 md:p-4 backdrop-blur-sm min-h-[110px] flex flex-col justify-center"
+                className="bg-white/60 rounded-xl p-2 md:p-3 backdrop-blur-sm min-h-[120px] flex flex-col justify-center"
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="relative min-h-[48px] flex items-center justify-center overflow-hidden px-1">
+                <div className="relative min-h-[60px] flex items-center justify-center overflow-hidden px-1">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={ageData.totalMinutes}
-                      className="text-base md:text-lg lg:text-xl font-bold text-green-600 absolute leading-tight break-all text-center w-full"
+                      className="text-sm md:text-base lg:text-lg font-bold text-green-600 absolute leading-tight text-center w-full whitespace-nowrap"
                       variants={digitVariants}
                       initial="enter"
                       animate="center"
                       exit="exit"
                       transition={{ duration: 0.3 }}
-                      style={{ wordBreak: 'break-all', hyphens: 'auto' }}
+                      style={{ 
+                        fontSize: ageData.totalMinutes.toString().length > 8 ? 'clamp(0.7rem, 2vw, 1rem)' : undefined,
+                        transform: ageData.totalMinutes.toString().length > 8 ? 'scale(0.85)' : undefined
+                      }}
                     >
                       {ageData.totalMinutes.toLocaleString()}
                     </motion.div>
