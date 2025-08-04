@@ -80,6 +80,32 @@
   .nature-gradient {
     @apply bg-gradient-to-br from-nature-200/30 via-sky-200/30 to-cream-200/30;
   }
+
+  /* Magical Cursor Enhancements */
+  * {
+    cursor: none !important;
+  }
+
+  /* Ensure clickable elements are properly interactive */
+  button, a, [role="button"], input, textarea, select {
+    position: relative;
+    z-index: auto;
+  }
+
+  /* Subtle glow on interactive elements when hovered */
+  button:hover, a:hover, [role="button"]:hover {
+    box-shadow: 0 0 15px rgba(255, 20, 147, 0.4);
+    transition: box-shadow 0.2s ease-out;
+  }
+
+  /* Prevent cursor interference with existing animations */
+  .magic-cursor-area {
+    pointer-events: none;
+  }
+
+  .magic-cursor-area > * {
+    pointer-events: auto;
+  }
 }
 
 @layer utilities {

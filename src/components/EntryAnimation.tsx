@@ -68,18 +68,18 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center space-y-8 px-4 relative z-50">
+    <div className="min-h-screen flex flex-col justify-center items-center space-y-8 px-6 md:px-8 lg:px-12 py-8 md:py-12 relative z-50 max-w-7xl mx-auto">
       {/* Birthday Greeting */}
       <motion.div
-        className="text-center"
+        className="text-center mb-4 md:mb-6"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: 'easeOut' }}
       >
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent px-4">
           🎉 Happy Birthday! 🎉
         </h1>
-        <p className="text-xl md:text-2xl text-gray-700 font-medium max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-gray-700 font-medium max-w-2xl mx-auto leading-relaxed px-4">
           Today is your special day! Let's celebrate! ✨
         </p>
       </motion.div>
@@ -90,10 +90,10 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
-          className="text-center mb-8 max-w-4xl mx-auto"
+          className="text-center mb-8 md:mb-12 max-w-5xl mx-auto px-4 md:px-6"
         >
           <motion.div
-            className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-8 border border-white/30 shadow-xl backdrop-blur-sm"
+            className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-6 md:p-8 lg:p-10 border border-white/30 shadow-xl backdrop-blur-sm mx-4 md:mx-6"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
@@ -234,7 +234,7 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
       )}
       
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center relative z-50">
+      <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-center relative z-50 px-4 md:px-6 mt-6 md:mt-8">
         {onReset && (
           <motion.button
             onClick={(e) => {

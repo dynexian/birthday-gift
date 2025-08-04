@@ -52,23 +52,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         <p className="text-lg text-gray-600 font-medium">Reading your birthday messages ✨</p>
       </motion.div>
 
-      {/* Debug Panel */}
-      <div className="fixed top-4 right-4 z-30 bg-black/50 text-white p-2 rounded text-xs font-mono">
-        <div>Message: {currentMessage + 1}/{messages.length}</div>
-        <div>Auto-advancing every 3s</div>
-        <button 
-          onClick={() => setCurrentMessage(prev => (prev + 1) % messages.length)}
-          className="mt-1 px-2 py-1 bg-purple-500 text-white rounded text-xs"
-        >
-          Next Message
-        </button>
-        <button 
-          onClick={() => setIsComplete(true)}
-          className="mt-1 px-2 py-1 bg-green-500 text-white rounded text-xs"
-        >
-          Complete
-        </button>
-      </div>
+
 
       {/* Main Content Area */}
       <div className="h-screen flex items-center justify-center px-4 md:px-8">

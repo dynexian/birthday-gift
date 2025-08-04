@@ -16,6 +16,33 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
     '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA',
   ];
 
+  // Stable cloud properties - calculated once
+  const cloudProperties = Array.from({ length: 8 }, (_, i) => {
+    const seed = i * 123.456; // Deterministic seed
+    return {
+      width: 80 + (Math.sin(seed) * 50 + 50), // 80-130px
+      height: 40 + (Math.sin(seed * 2) * 30 + 30), // 40-70px
+      top: 10 + (Math.sin(seed * 3) * 25 + 25), // 10-35%
+      initialLeft: -10 + (Math.sin(seed * 4) * 20), // Start position
+      duration: 20 + (Math.sin(seed * 5) * 15 + 15), // 20-35 seconds
+      delay: Math.abs(Math.sin(seed * 6)) * 15, // 0-15 seconds
+      opacity: 0.4 + (Math.sin(seed * 7) * 0.3 + 0.3), // 0.4-0.7
+    };
+  });
+
+  // Stable floating particle properties
+  const floatingParticles = Array.from({ length: 12 }, (_, i) => {
+    const seed = i * 87.654;
+    return {
+      size: 4 + (Math.sin(seed) * 6 + 6), // 4-10px
+      top: Math.abs(Math.sin(seed * 2)) * 80 + 10, // 10-90%
+      left: Math.abs(Math.sin(seed * 3)) * 90 + 5, // 5-95%
+      duration: 8 + (Math.sin(seed * 4) * 4 + 4), // 8-12 seconds
+      delay: Math.abs(Math.sin(seed * 5)) * 5, // 0-5 seconds
+      color: balloonColors[i % balloonColors.length],
+    };
+  });
+
   const handlePop = (balloonId: number, event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
@@ -24,19 +51,46 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
       return;
     }
     
-    // Create confetti effect
+    // Create confetti effect at the balloon's position
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+    
     confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: [balloonColors[balloonId % balloonColors.length]]
+      particleCount: 30,
+      spread: 60,
+      origin: { x, y },
+      colors: [balloonColors[balloonId % balloonColors.length]],
+      gravity: 0.8,
+      scalar: 0.8,
     });
+    
+    // Add a small celebration burst
+    setTimeout(() => {
+      confetti({
+        particleCount: 15,
+        spread: 40,
+        origin: { x, y },
+        colors: ['#FFD700', '#FFA500', '#FF69B4'],
+        gravity: 1.2,
+        scalar: 0.6,
+      });
+    }, 100);
     
     const newPoppedBalloons = new Set(poppedBalloons);
     newPoppedBalloons.add(balloonId);
     setPoppedBalloons(newPoppedBalloons);
     
     if (newPoppedBalloons.size >= targetPopCount) {
+      // Celebration confetti for completing the game
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: balloonColors
+        });
+      }, 500);
       setTimeout(() => setShowCompletion(true), 1000);
     }
   };
@@ -45,45 +99,65 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
     const isPopped = poppedBalloons.has(idx);
     const balloonColor = balloonColors[idx % balloonColors.length];
     
-    if (isPopped) return null;
+    // Create a unique seed for consistent positioning
+    const positionSeed = idx * 123.456; // Deterministic random
+    const leftPosition = (idx * 7 + 10 + (Math.sin(positionSeed) * 5 + 5));
+    const animationDuration = 5 + (Math.sin(positionSeed * 2) * 1.5 + 1.5); // 3.5-6.5 seconds
+    const animationDelay = (Math.sin(positionSeed * 3) * 1 + 1); // 0-2 seconds
     
     return (
       <motion.div
-        key={idx}
+        key={`balloon-${idx}`} // Stable key
         className="absolute cursor-pointer"
         style={{
-          left: `${(idx * 7 + 10 + Math.random() * 10)}%`,
+          left: `${leftPosition}%`,
           bottom: '-100px',
-          zIndex: 20, // Ensure balloons are above background elements
+          zIndex: 20,
+          pointerEvents: isPopped ? 'none' : 'auto',
         }}
+        initial={{ opacity: 1 }}
         animate={{
           y: [0, -window.innerHeight - 200],
+          opacity: isPopped ? 0 : 1,
+          scale: isPopped ? 0 : 1,
+        }}
+        exit={{ 
+          scale: 0, 
+          opacity: 0,
+          transition: { duration: 0.3 }
         }}
         transition={{
-          duration: Math.random() * 3 + 4,
-          ease: 'linear',
-          repeat: Infinity,
-          delay: Math.random() * 2,
+          y: {
+            duration: animationDuration,
+            ease: 'linear',
+            repeat: isPopped ? 0 : Infinity,
+            delay: animationDelay,
+          },
+          opacity: {
+            duration: isPopped ? 0.3 : 0,
+          },
+          scale: {
+            duration: isPopped ? 0.3 : 0,
+          },
         }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={(event) => handlePop(idx, event)}
+        whileHover={!isPopped ? { scale: 1.1 } : {}}
+        whileTap={!isPopped ? { scale: 0.9 } : {}}
+        onClick={!isPopped ? (event) => handlePop(idx, event) : undefined}
       >
         {/* Balloon */}
         <motion.div
           className="w-16 h-20 rounded-full shadow-lg relative pointer-events-auto"
           style={{ 
             backgroundColor: balloonColor,
-            // Ensure the balloon has a generous click area
             padding: '4px',
             margin: '-4px',
           }}
-          animate={{
+          animate={!isPopped ? {
             rotate: [0, 5, -5, 0],
-          }}
+          } : {}}
           transition={{
             duration: 2,
-            repeat: Infinity,
+            repeat: isPopped ? 0 : Infinity,
             ease: "easeInOut",
           }}
         >
@@ -101,7 +175,7 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
         />
       </motion.div>
     );
-  }).filter(Boolean);
+  });
 
   if (showCompletion) {
     return (
@@ -155,29 +229,103 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-sky-200 via-blue-100 to-purple-200">
-      {/* Background clouds */}
-      {[...Array(5)].map((_, i) => (
+      {/* Stable Background Clouds */}
+      {cloudProperties.map((cloud, i) => (
         <motion.div
           key={`cloud-${i}`}
-          className="absolute bg-white rounded-full opacity-60 pointer-events-none"
+          className="absolute rounded-full opacity-60 pointer-events-none"
           style={{
-            width: `${Math.random() * 100 + 80}px`,
-            height: `${Math.random() * 50 + 40}px`,
-            top: `${Math.random() * 30 + 10}%`,
-            left: `${Math.random() * 100}%`,
-            zIndex: 1, // Keep clouds in background
+            width: `${cloud.width}px`,
+            height: `${cloud.height}px`,
+            top: `${cloud.top}%`,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%)',
+            boxShadow: '0 4px 20px rgba(255,255,255,0.3)',
+            zIndex: 1,
+            opacity: cloud.opacity,
           }}
           animate={{
-            x: [-50, window.innerWidth + 50],
+            x: [cloud.initialLeft, window.innerWidth + 100],
           }}
           transition={{
-            duration: Math.random() * 20 + 15,
+            duration: cloud.duration,
             repeat: Infinity,
             ease: "linear",
-            delay: Math.random() * 10,
+            delay: cloud.delay,
           }}
         />
       ))}
+
+      {/* Floating Sparkle Particles */}
+      {floatingParticles.map((particle, i) => (
+        <motion.div
+          key={`particle-${i}`}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            top: `${particle.top}%`,
+            left: `${particle.left}%`,
+            background: `radial-gradient(circle, ${particle.color}60, transparent)`,
+            boxShadow: `0 0 ${particle.size * 2}px ${particle.color}40`,
+            zIndex: 2,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            scale: [0.5, 1.2, 0.5],
+            opacity: [0.3, 0.8, 0.3],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
+
+      {/* Gentle Floating Bubbles */}
+      {[...Array(6)].map((_, i) => {
+        const bubbleSeed = i * 234.567;
+        const size = 20 + (Math.sin(bubbleSeed) * 20 + 20); // 20-40px
+        const startLeft = Math.abs(Math.sin(bubbleSeed * 2)) * 100;
+        const duration = 15 + (Math.sin(bubbleSeed * 3) * 10 + 10); // 15-25 seconds
+        
+        return (
+          <motion.div
+            key={`bubble-${i}`}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              bottom: '-50px',
+              left: `${startLeft}%`,
+              background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(173,216,230,0.3))',
+              border: '1px solid rgba(255,255,255,0.4)',
+              backdropFilter: 'blur(2px)',
+              zIndex: 3,
+            }}
+            animate={{
+              y: [0, -window.innerHeight - 100],
+              x: [0, Math.sin(bubbleSeed * 4) * 100],
+            }}
+            transition={{
+              duration: duration,
+              repeat: Infinity,
+              ease: "linear",
+              delay: Math.abs(Math.sin(bubbleSeed * 5)) * 8,
+            }}
+          />
+        );
+      })}
+
+      {/* Subtle Rainbow Gradient Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(45deg, transparent 0%, rgba(255,182,193,0.1) 25%, rgba(173,216,230,0.1) 50%, rgba(221,160,221,0.1) 75%, transparent 100%)',
+          zIndex: 4,
+        }}
+      />
       
       {/* Instructions */}
       <motion.div
@@ -187,24 +335,24 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <h2 className="text-3xl md:text-5xl font-bold text-purple-800 mb-4">
+        <h2 className="text-3xl md:text-5xl font-bold text-purple-800 mb-4 drop-shadow-lg">
           Pop the Balloons! 🎈
         </h2>
-        <p className="text-lg text-purple-600">
+        <p className="text-lg text-purple-600 drop-shadow-md">
           Click the balloons as they float by! ({poppedBalloons.size}/{targetPopCount})
         </p>
       </motion.div>
       
       {/* Progress bar */}
       <motion.div
-        className="absolute top-32 left-1/2 transform -translate-x-1/2 w-64 h-4 bg-white rounded-full overflow-hidden shadow-lg pointer-events-none"
+        className="absolute top-32 left-1/2 transform -translate-x-1/2 w-64 h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"
+          className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full shadow-inner"
           initial={{ width: 0 }}
           animate={{ width: `${(poppedBalloons.size / targetPopCount) * 100}%` }}
           transition={{ duration: 0.5 }}
