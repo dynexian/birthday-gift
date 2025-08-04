@@ -1,0 +1,321 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-sky-50 via-nature-50 to-cream-50;
+    @apply min-h-screen overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .glow-button {
+    @apply relative px-8 py-4 bg-gradient-to-r from-nature-400 to-nature-500;
+    @apply text-white font-medium rounded-full shadow-lg;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:from-nature-500 hover:to-nature-600;
+    @apply hover:shadow-nature-400/50 hover:shadow-2xl;
+    @apply hover:scale-105 transform;
+    @apply focus:outline-none focus:ring-4 focus:ring-nature-300/50;
+  }
+
+  .glow-button::before {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    @apply bg-gradient-to-r from-nature-400 to-nature-500;
+    @apply opacity-0 transition-opacity duration-300;
+    @apply blur-md;
+    z-index: -1;
+  }
+
+  .glow-button:hover::before {
+    @apply opacity-70;
+  }
+
+  .floating-particle {
+    @apply absolute opacity-60;
+    animation: float 6s ease-in-out infinite, drift 20s linear infinite;
+  }
+
+  .countdown-digit {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+    @apply drop-shadow-lg;
+    font-family: 'Playfair Display', serif;
+    /* Use solid color instead of gradient for better visibility */
+    color: #15803d !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* Remove transparent background that was causing issues */
+    background: none;
+  }
+
+  .stage-container {
+    @apply min-h-screen flex items-center justify-center;
+    @apply relative overflow-hidden;
+  }
+
+  .gallery-card {
+    @apply bg-white/80 backdrop-blur-md rounded-2xl;
+    @apply shadow-xl hover:shadow-2xl;
+    @apply border border-white/20;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:scale-105 hover:bg-white/90;
+    @apply p-6 m-4 min-w-[300px] max-w-[400px];
+  }
+
+  .serene-text {
+    @apply text-nature-700 font-medium;
+    @apply drop-shadow-sm;
+  }
+
+  .nature-gradient {
+    @apply bg-gradient-to-br from-nature-200/30 via-sky-200/30 to-cream-200/30;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
+/* Custom animations */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes leaf-fall {
+  0% { 
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes petal-drift {
+  0% { 
+    transform: translateX(-100px) translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateX(100px) translateY(-100vh) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.leaf-fall {
+  animation: leaf-fall 15s linear infinite;
+}
+
+.petal-drift {
+  animation: petal-drift 12s linear infinite;
+}
+
+/* New stage-specific animations */
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.6), 0 0 80px rgba(34, 197, 94, 0.3);
+  }
+}
+
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float-up {
+  0% { 
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { 
+    transform: translateY(-10vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: text-shimmer 2s ease-in-out infinite;
+}
+
+.float-up {
+  animation: float-up 8s linear infinite;
+}
+
+.twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* Scrollbar hiding styles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Interactive stage styles */
+.rpg-stat-bar {
+  background: linear-gradient(90deg, 
+    rgba(34, 197, 94, 0.8), 
+    rgba(34, 197, 94, 0.6)
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.rpg-stat-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.8), 
+    rgba(255, 255, 255, 0.4)
+  );
+}
+
+/* Journal stage styles */
+.journal-cursor {
+  @apply inline-block w-0.5 h-6 bg-nature-600 ml-1;
+  animation: cursor-blink 1s ease-in-out infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Tribute wall styles */
+.tribute-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.tribute-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(34, 197, 94, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.tribute-card:hover::before {
+  opacity: 1;
+  animation: sweep 0.6s ease-out;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Closing stage styles */
+.cosmic-background {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(79, 70, 229, 0.4) 0%,
+    rgba(147, 51, 234, 0.3) 25%,
+    rgba(219, 39, 119, 0.2) 50%,
+    rgba(15, 23, 42, 0.9) 100%
+  );
+}
+
+.aurora {
+  background: linear-gradient(
+    45deg,
+    rgba(34, 197, 94, 0.3),
+    rgba(59, 130, 246, 0.3),
+    rgba(147, 51, 234, 0.3),
+    rgba(236, 72, 153, 0.3)
+  );
+  background-size: 400% 400%;
+  animation: aurora-dance 8s ease-in-out infinite;
+}
+
+@keyframes aurora-dance {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+}
