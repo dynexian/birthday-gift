@@ -60,22 +60,9 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
     setInteractedWords(prev => new Set(Array.from(prev).concat(index)));
   };
 
-  const getSizeClasses = (size: string, textLength: number) => {
-    // Adjust font size based on text length to prevent overflow
-    const lengthFactor = textLength > 8 ? 0.8 : textLength > 6 ? 0.9 : 1;
-    
-    switch (size) {
-      case 'sm': 
-        return textLength > 10 ? 'text-base sm:text-lg md:text-xl' : 'text-lg sm:text-xl md:text-2xl';
-      case 'md': 
-        return textLength > 8 ? 'text-lg sm:text-xl md:text-2xl lg:text-3xl' : 'text-xl sm:text-2xl md:text-3xl lg:text-4xl';
-      case 'lg': 
-        return textLength > 7 ? 'text-xl sm:text-2xl md:text-3xl lg:text-4xl' : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl';
-      case 'xl': 
-        return textLength > 6 ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl' : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl';
-      default: 
-        return 'text-xl sm:text-2xl';
-    }
+  const getSizeClasses = () => {
+    // Use uniform sizing for all words to prevent overflow
+    return 'text-lg sm:text-xl md:text-2xl lg:text-3xl';
   };
 
   const filteredWords = selectedCategory 
@@ -188,7 +175,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
           <AnimatePresence>
             {filteredWords.map((word, index) => {
               const isInteracted = interactedWords.has(index);
-              const sizeClasses = getSizeClasses(word.size, word.text.length);
+              const sizeClasses = getSizeClasses();
               
               return (
                 <motion.div
@@ -210,8 +197,8 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
                       isInteracted ? 'ring-4 ring-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : ''
                     }`}
                     style={{
-                      minHeight: word.size === 'xl' ? '160px' : word.size === 'lg' ? '140px' : word.size === 'md' ? '120px' : '100px',
-                      maxHeight: word.size === 'xl' ? '180px' : word.size === 'lg' ? '160px' : word.size === 'md' ? '140px' : '120px'
+                      minHeight: '120px',
+                      maxHeight: '120px'
                     }}
                     whileHover={{ 
                       scale: 1.05,
@@ -230,15 +217,11 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
                       transition={{ duration: 0.6 }}
                     >
                       <motion.span
-                        className={`font-bold ${sizeClasses} text-center leading-tight mb-1 sm:mb-2 break-words hyphens-auto overflow-hidden`}
+                        className={`font-bold ${sizeClasses} text-center leading-tight mb-1 sm:mb-2 whitespace-nowrap overflow-hidden text-ellipsis`}
                         style={{ 
                           color: word.color,
-                          wordBreak: 'break-word',
-                          overflowWrap: 'break-word',
-                          display: '-webkit-box',
-                          WebkitLineClamp: word.size === 'xl' ? 2 : word.size === 'lg' ? 2 : 3,
-                          WebkitBoxOrient: 'vertical' as const,
-                          maxWidth: '100%'
+                          maxWidth: '100%',
+                          display: 'block'
                         }}
                         animate={{
                           textShadow: [
