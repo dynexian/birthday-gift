@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { useAudioManager } from '../hooks/useAudio';
 
 interface BalloonGameProps {
   onComplete: () => void;
@@ -10,6 +11,7 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
   const [poppedBalloons, setPoppedBalloons] = useState<Set<number>>(new Set());
   const [showCompletion, setShowCompletion] = useState(false);
   const targetPopCount = 8;
+  const { playSound } = useAudioManager();
 
   const balloonColors = [
     '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
@@ -51,6 +53,9 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
       return;
     }
     
+    // Play balloon pop sound
+    playSound('balloon-pop', { volume: 0.4 });
+    
     // Create confetti effect at the balloon's position
     const rect = (event.target as HTMLElement).getBoundingClientRect();
     const x = (rect.left + rect.width / 2) / window.innerWidth;
@@ -82,6 +87,11 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
     setPoppedBalloons(newPoppedBalloons);
     
     if (newPoppedBalloons.size >= targetPopCount) {
+      // Play completion sound
+      setTimeout(() => {
+        playSound('confetti', { volume: 0.6 });
+      }, 300);
+      
       // Celebration confetti for completing the game
       setTimeout(() => {
         confetti({

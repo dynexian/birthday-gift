@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { useAudioManager } from '../hooks/useAudio';
 
 interface CakeCutProps {
   onComplete: () => void;
@@ -8,9 +9,18 @@ interface CakeCutProps {
 
 const CakeCut: React.FC<CakeCutProps> = ({ onComplete }) => {
   const [cakeCut, setCakeCut] = useState(false);
+  const { playSound } = useAudioManager();
 
   const handleCakeSlice = () => {
     if (!cakeCut) {  
+      // Play cake cutting sound
+      playSound('cake-cut', { volume: 0.5 });
+      
+      // Play happy birthday cheer after a short delay
+      setTimeout(() => {
+        playSound('happy-birthday', { volume: 0.7 });
+      }, 800);
+      
       confetti({
         particleCount: 200,
         spread: 100,

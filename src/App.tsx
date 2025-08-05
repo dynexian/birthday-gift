@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Countdown from './components/Countdown';
 import EntryAnimation from './components/EntryAnimation';
@@ -10,14 +10,19 @@ import MemoryGallery from './components/MemoryGallery';
 import FinalThankYou from './components/FinalThankYou';
 import ParticleSystem from './components/ParticleSystem';
 import FloatingElements from './components/FloatingElements';
+import AudioPreloader from './components/AudioPreloader';
+import { AudioActivator } from './components/AudioActivator';
 import { useCustomCursor } from './hooks/useCustomCursor';
+import { useAudioManager } from './hooks/useAudio';
 
-type Stage = 'countdown' | 'entry' | 'message' | 'wordcloud' | 'balloons' | 'cake' | 'gallery' | 'thankyou';
+type Stage = 'preloader' | 'countdown' | 'entry' | 'message' | 'wordcloud' | 'balloons' | 'cake' | 'gallery' | 'thankyou';
 
 const App: React.FC = () => {
-  const [currentStage, setCurrentStage] = useState<Stage>('countdown');
+  const [currentStage, setCurrentStage] = useState<Stage>('preloader');
   const [key, setKey] = useState(0); // Add key to force re-render countdown
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   useCustomCursor();
+  const { playSound, playBackgroundMusic, stopAllAudio } = useAudioManager();
 
   // Set target date for countdown (120 seconds from now for demo)
   const targetDate = new Date();
@@ -25,6 +30,73 @@ const App: React.FC = () => {
 
   // Set birth date for age calculation (you can customize this)
   const birthDate = new Date('1995-08-04'); // Example: August 4, 1995 - customize this date!
+
+  // Background music management based on current stage
+  useEffect(() => {
+    // Don't play music during preloader or when audio isn't enabled
+    if (currentStage === 'preloader' || !isAudioEnabled) return;
+    
+    switch (currentStage) {
+      case 'countdown':
+        // Countdown stage only has timer sound effects, no background music
+        break;
+      case 'entry':
+        playBackgroundMusic('celebration', { volume: 0.4, loop: true });
+        break;
+      case 'message':
+        playBackgroundMusic('gentle-piano', { volume: 0.25, loop: true });
+        break;
+      case 'wordcloud':
+        playBackgroundMusic('ambient-magical', { volume: 0.3, loop: true });
+        break;
+      case 'balloons':
+        playBackgroundMusic('celebration', { volume: 0.35, loop: true });
+        break;
+      case 'cake':
+        // Special handling for cake cutting - will play happy birthday sound
+        playBackgroundMusic('gentle-piano', { volume: 0.2, loop: true });
+        break;
+      case 'gallery':
+        playBackgroundMusic('ambient-magical', { volume: 0.25, loop: true });
+        break;
+      case 'thankyou':
+        playBackgroundMusic('theme-birthday', { volume: 0.3, loop: true });
+        break;
+    }
+  }, [currentStage, playBackgroundMusic, isAudioEnabled]);
+
+  // Enable audio context on first user interaction
+  const enableAudioContext = React.useCallback(() => {
+    // Create a silent audio to enable the context
+    const silentAudio = new Audio();
+    silentAudio.volume = 0;
+    silentAudio.play().then(() => {
+      setIsAudioEnabled(true);
+    }).catch(() => {
+      // Audio context still blocked, but we set it as enabled anyway
+      setIsAudioEnabled(true);
+    });
+  }, []);
+
+  // Add global click handler to enable audio on first interaction
+  React.useEffect(() => {
+    if (isAudioEnabled) return; // Don't add listeners if already enabled
+    
+    const handleFirstInteraction = () => {
+      enableAudioContext();
+      // Remove listener after first interaction
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+    
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, [enableAudioContext, isAudioEnabled]);
 
   // Add keyboard listener to reset to countdown (press 'R' key)
   React.useEffect(() => {
@@ -47,9 +119,11 @@ const App: React.FC = () => {
   // Stage navigation functions
   const goToNextStage = () => {
     console.log('Going to next stage from:', currentStage);
-    const stages: Stage[] = ['countdown', 'entry', 'message', 'wordcloud', 'balloons', 'cake', 'gallery', 'thankyou'];
+    const stages: Stage[] = ['preloader', 'countdown', 'entry', 'message', 'wordcloud', 'balloons', 'cake', 'gallery', 'thankyou'];
     const currentIndex = stages.indexOf(currentStage);
     if (currentIndex < stages.length - 1) {
+      // Add page transition sound effect
+      playSound('page-transition', { volume: 0.3 });
       setCurrentStage(stages[currentIndex + 1]);
       console.log('New stage:', stages[currentIndex + 1]);
     }
@@ -57,14 +131,20 @@ const App: React.FC = () => {
 
   const restartCountdown = () => {
     console.log('Restarting countdown');
+    stopAllAudio(); // Stop all audio when restarting
     setCurrentStage('countdown');
     setKey(prev => prev + 1); // Force re-render with new countdown time
   };
 
   const restartExperience = () => {
     console.log('Restarting experience');
+    stopAllAudio(); // Stop all audio when restarting
     setCurrentStage('countdown');
     setKey(prev => prev + 1); // Force re-render with new countdown time
+  };
+
+  const handlePreloaderComplete = () => {
+    setCurrentStage('countdown');
   };
 
   return (
@@ -75,6 +155,11 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <AnimatePresence mode="wait">
+        {/* Stage 0: Audio Preloader */}
+        {currentStage === 'preloader' && (
+          <AudioPreloader onComplete={handlePreloaderComplete} />
+        )}
+
         {/* Stage 1: Countdown */}
         {currentStage === 'countdown' && (
           <motion.div
@@ -237,6 +322,11 @@ const App: React.FC = () => {
         className="fixed inset-0 z-0 pointer-events-none"
         style={{ pointerEvents: 'none' }}
       ></div>
+
+      {/* Audio Activator - Show when audio hasn't been enabled */}
+      {!isAudioEnabled && currentStage !== 'preloader' && (
+        <AudioActivator onActivate={() => setIsAudioEnabled(true)} />
+      )}
     </div>
   );
 };

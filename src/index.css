@@ -43,11 +43,13 @@
   }
 
   .countdown-digit {
-    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
-    @apply drop-shadow-lg;
+    font-size: clamp(2rem, 5vw, 4rem) !important;
+    font-weight: bold !important;
     font-family: 'Playfair Display', serif;
-    /* Use solid color instead of gradient for better visibility */
-    color: #15803d !important;
+    color: #8b5cf6 !important;
+    text-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    line-height: 1 !important;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     /* Remove transparent background that was causing issues */
     background: none;

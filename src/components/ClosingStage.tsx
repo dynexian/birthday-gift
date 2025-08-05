@@ -85,16 +85,16 @@ const ClosingStage: React.FC<ClosingStageProps> = ({ onBack, onRestart }) => {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-8">
         {/* Animated closing text */}
-        <div className="mb-16 space-y-6">
+        <div className="mb-20 space-y-8 md:space-y-10">
           {closingText.map((text, index) => (
             <motion.p
               key={index}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.8 }}
-              className="text-2xl md:text-4xl lg:text-5xl font-light text-white/90 leading-relaxed"
+              className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white/90 leading-relaxed md:leading-relaxed px-4"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
               {text}
@@ -107,7 +107,7 @@ const ClosingStage: React.FC<ClosingStageProps> = ({ onBack, onRestart }) => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: closingText.length * 0.8 + 0.5 }}
-          className="grid md:grid-cols-3 gap-6 mb-12"
+          className="grid md:grid-cols-3 gap-8 mb-16"
         >
           {actionCards.map((card, index) => (
             <motion.button
@@ -118,15 +118,15 @@ const ClosingStage: React.FC<ClosingStageProps> = ({ onBack, onRestart }) => {
               transition={{ duration: 0.6, delay: closingText.length * 0.8 + 0.8 + index * 0.2 }}
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-300"
+              className="group relative bg-white/10 backdrop-blur-md rounded-2xl p-10 md:p-12 border border-white/20 hover:border-white/40 transition-all duration-300"
             >
               {/* Glow effect */}
               <div className={`absolute inset-0 bg-gradient-to-r ${card.color} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
               
               <div className="relative z-10">
-                <div className="text-4xl mb-4">{card.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-                <p className="text-white/70">{card.subtitle}</p>
+                <div className="text-5xl md:text-6xl mb-6">{card.icon}</div>
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{card.title}</h3>
+                <p className="text-white/70 text-base md:text-lg">{card.subtitle}</p>
               </div>
             </motion.button>
           ))}
@@ -137,7 +137,7 @@ const ClosingStage: React.FC<ClosingStageProps> = ({ onBack, onRestart }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: closingText.length * 0.8 + 2 }}
-          className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10"
+          className="bg-white/5 backdrop-blur-md rounded-3xl p-10 md:p-12 border border-white/10 max-w-3xl mx-auto"
         >
           <motion.div
             animate={{ 
@@ -145,11 +145,11 @@ const ClosingStage: React.FC<ClosingStageProps> = ({ onBack, onRestart }) => {
               rotate: [0, 1, -1, 0]
             }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="text-6xl mb-4"
+            className="text-6xl md:text-7xl mb-6"
           >
             🙏
           </motion.div>
-          <p className="text-white/90 text-lg md:text-xl font-medium">
+          <p className="text-white/90 text-lg md:text-xl lg:text-2xl font-medium leading-relaxed">
             Thank you for taking this journey with us. May you carry this serenity in your heart wherever you go.
           </p>
         </motion.div>

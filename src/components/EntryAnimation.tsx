@@ -68,18 +68,18 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center space-y-8 px-6 md:px-8 lg:px-12 py-8 md:py-12 relative z-50 max-w-7xl mx-auto">
+    <div className="min-h-screen flex flex-col justify-center items-center space-y-12 px-6 md:px-8 lg:px-12 py-8 md:py-12 relative z-50 max-w-7xl mx-auto">
       {/* Birthday Greeting */}
       <motion.div
-        className="text-center mb-4 md:mb-6"
+        className="text-center mb-6 md:mb-8"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: 'easeOut' }}
       >
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent px-4">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent px-4 leading-tight">
           🎉 Happy Birthday! 🎉
         </h1>
-        <p className="text-xl md:text-2xl text-gray-700 font-medium max-w-2xl mx-auto leading-relaxed px-4">
+        <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed px-4">
           Today is your special day! Let's celebrate! ✨
         </p>
       </motion.div>
@@ -90,15 +90,15 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
-          className="text-center mb-8 md:mb-12 max-w-5xl mx-auto px-4 md:px-6"
+          className="text-center mb-12 md:mb-16 max-w-6xl mx-auto px-4 md:px-6"
         >
           <motion.div
-            className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-6 md:p-8 lg:p-10 border border-white/30 shadow-xl backdrop-blur-sm mx-4 md:mx-6"
+            className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-8 md:p-10 lg:p-12 border border-white/30 shadow-xl backdrop-blur-sm mx-4 md:mx-6"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
             <motion.div
-              className="text-3xl mb-4"
+              className="text-4xl md:text-5xl mb-6"
               animate={{ 
                 rotate: [0, 10, -10, 0],
                 scale: [1, 1.1, 1] 
@@ -112,11 +112,11 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
               🎂
             </motion.div>
             
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
               You've Been Amazing for...
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
               <motion.div 
                 className="bg-white/60 rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center"
                 whileHover={{ scale: 1.05 }}
@@ -237,7 +237,7 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
       )}
       
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-center relative z-50 px-4 md:px-6 mt-6 md:mt-8">
+      <div className="flex flex-col sm:flex-row gap-6 md:gap-8 items-center relative z-50 px-4 md:px-6 mt-8 md:mt-12">
         {onReset && (
           <motion.button
             onClick={(e) => {
@@ -245,15 +245,26 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
               console.log('Reset button clicked!');
               onReset();
             }}
-            className="px-6 py-3 text-md font-medium text-gray-700 bg-white/50 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 cursor-pointer relative z-50"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 2 }}
-            whileHover={{ scale: 1.05 }}
+            className="group relative px-8 py-4 text-lg font-medium text-gray-700 bg-white/70 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl border border-gray-200/50 cursor-pointer overflow-hidden"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 2, type: "spring", stiffness: 150 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             style={{ pointerEvents: 'auto', cursor: 'pointer', position: 'relative', zIndex: 9999 }}
           >
-            ← Back to Countdown
+            {/* Hover glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+            
+            <span className="relative z-10 flex items-center gap-2">
+              <motion.span
+                animate={{ x: [-2, 0, -2] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                ←
+              </motion.span>
+              Back to Countdown
+            </span>
           </motion.button>
         )}
         
@@ -263,15 +274,41 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
             console.log('Complete button clicked!');
             onComplete();
           }}
-          className="glow-button px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer relative z-50"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.2 }}
-          whileHover={{ scale: 1.05 }}
+          className="group relative px-10 py-5 text-xl font-bold text-white bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full shadow-2xl cursor-pointer overflow-hidden"
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, delay: 2.2, type: "spring", stiffness: 150 }}
+          whileHover={{ 
+            scale: 1.08, 
+            y: -4,
+            boxShadow: "0 25px 80px rgba(147, 51, 234, 0.4)"
+          }}
           whileTap={{ scale: 0.95 }}
           style={{ pointerEvents: 'auto', cursor: 'pointer', position: 'relative', zIndex: 9999 }}
         >
-          Let's Begin the Celebration! 🎉
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110" />
+          
+          {/* Shimmer effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
+            animate={{ x: ["-120%", "120%"] }}
+            transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+          />
+          
+          {/* Button content */}
+          <span className="relative z-10 flex items-center gap-3">
+            Let's Begin the Celebration!
+            <motion.span
+              animate={{ 
+                rotate: [0, 20, -20, 0],
+                scale: [1, 1.2, 1]
+              }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+            >
+              🎉
+            </motion.span>
+          </span>
         </motion.button>
       </div>
     </div>

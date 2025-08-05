@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAudioManager } from '../hooks/useAudio';
 
 interface WordCloudProps {
   onComplete: () => void;
@@ -9,6 +10,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
   const [showButton, setShowButton] = useState(false);
   const [interactedWords, setInteractedWords] = useState<Set<number>>(new Set());
   const [hoveredWord, setHoveredWord] = useState<number | null>(null);
+  const { playSound } = useAudioManager();
 
   const words = [
     { text: "Kind", color: "#FF6B6B", size: "text-3xl", weight: 1, depth: 0.8 },
@@ -106,6 +108,9 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
     newInteracted.add(index);
     setInteractedWords(newInteracted);
     
+    // Play sparkle sound for word interaction
+    playSound('sparkle', { volume: 0.8 });
+    
     // Create ripple effect for clicked words
     const wordElement = document.getElementById(`word-${index}`);
     if (wordElement) {
@@ -118,6 +123,11 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
 
   const handleWordHover = (index: number, isHovering: boolean) => {
     setHoveredWord(isHovering ? index : null);
+    
+    // Play subtle hover sound
+    if (isHovering) {
+      playSound('word-hover', { volume: 0.5 });
+    }
   };
 
   return (
@@ -157,7 +167,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-16 md:pt-20 pb-8 md:pb-10 px-4 relative z-20"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-20 md:pt-24 pb-12 md:pb-16 px-6 relative z-20 leading-tight"
           style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             WebkitBackgroundClip: 'text',
@@ -265,69 +275,118 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
       {showButton && (
         <motion.div
           className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50"
-          initial={{ opacity: 0, y: 50, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 100, scale: 0.5, rotateX: 90 }}
+          animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
           transition={{ 
-            duration: 1,
+            duration: 1.2,
             type: "spring",
-            stiffness: 200,
-            damping: 20
+            stiffness: 150,
+            damping: 18,
+            delay: 0.3
           }}
         >
           <motion.button
-            onClick={onComplete}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-10 py-5 rounded-full text-xl font-semibold shadow-2xl relative overflow-hidden"
-            whileHover={{ 
-              scale: 1.15, 
-              boxShadow: "0 20px 60px rgba(147, 51, 234, 0.4)",
-              transition: { duration: 0.3 }
+            onClick={() => {
+              playSound('button-click', { volume: 0.7 });
+              onComplete();
             }}
-            whileTap={{ scale: 0.95 }}
+            className="relative bg-gradient-to-r from-purple-500 to-pink-500 text-white px-12 py-6 rounded-full text-xl font-bold shadow-2xl overflow-hidden group cursor-pointer"
+            whileHover={{ 
+              scale: 1.12, 
+              y: -8,
+              boxShadow: "0 25px 80px rgba(147, 51, 234, 0.5)",
+              transition: { duration: 0.3, ease: "easeOut" }
+            }}
+            whileTap={{ scale: 0.95, y: 0 }}
             animate={{
               boxShadow: [
-                "0 0 30px rgba(147, 51, 234, 0.3)",
-                "0 0 60px rgba(147, 51, 234, 0.6)",
-                "0 0 30px rgba(147, 51, 234, 0.3)",
+                "0 15px 40px rgba(147, 51, 234, 0.3)",
+                "0 20px 60px rgba(147, 51, 234, 0.6)",
+                "0 15px 40px rgba(147, 51, 234, 0.3)",
               ],
             }}
             transition={{
               boxShadow: {
                 duration: 3,
                 repeat: Infinity,
-                repeatType: "reverse",
+                ease: "easeInOut"
               }
             }}
           >
+            {/* Glow effect background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300 group-hover:scale-110" />
+            
+            {/* Primary button background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
+            
+            {/* Shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
+              animate={{
+                x: ["-120%", "120%"],
+                skewX: [-20, 20, -20]
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                repeatDelay: 1.5,
+                ease: "easeInOut"
+              }}
+            />
+            
+            {/* Floating particles around button */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-white rounded-full pointer-events-none"
+                style={{
+                  left: `${20 + (i * 10)}%`,
+                  top: `${30 + (i % 2) * 40}%`,
+                }}
+                animate={{
+                  y: [-10, -30, -10],
+                  opacity: [0.3, 1, 0.3],
+                  scale: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 1,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+            
             <motion.span
-              className="relative z-10"
+              className="relative z-10 flex items-center gap-2"
               animate={{ 
                 textShadow: [
-                  "0 0 10px rgba(255,255,255,0.5)",
-                  "0 0 20px rgba(255,255,255,0.8)",
-                  "0 0 10px rgba(255,255,255,0.5)",
+                  "0 2px 10px rgba(255,255,255,0.5)",
+                  "0 4px 20px rgba(255,255,255,0.8)",
+                  "0 2px 10px rgba(255,255,255,0.5)",
                 ]
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                repeatType: "reverse",
+                ease: "easeInOut"
               }}
             >
-              Let's continue ✨
+              Let's continue
+              <motion.span
+                animate={{ 
+                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: 0.5
+                }}
+              >
+                ✨
+              </motion.span>
             </motion.span>
-            
-            {/* Animated background shimmer */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20"
-              animate={{
-                x: ["-100%", "100%"],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 1,
-              }}
-            />
           </motion.button>
         </motion.div>
       )}
