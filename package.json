@@ -2,7 +2,7 @@
   "name": "birthday-gift",
   "version": "1.0.0",
   "description": "A beautiful birthday celebration app with countdown, animations, and personalized experiences",
-  "homepage": "https://yourusername.github.io/birthday-gift",
+  "homepage": "https://dynexian.github.io/birthday-gift",
   "private": true,
   "dependencies": {
     "@types/canvas-confetti": "^1.9.0",
