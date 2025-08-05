@@ -1,7 +1,7 @@
 {
-  "name": "serene-countdown",
+  "name": "birthday-gift",
   "version": "1.0.0",
-  "description": "A serene, nature-themed countdown landing page with beautiful animations",
+  "description": "A beautiful birthday celebration app with countdown, animations, and personalized experiences",
   "private": true,
   "dependencies": {
     "@types/canvas-confetti": "^1.9.0",

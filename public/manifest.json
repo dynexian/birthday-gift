@@ -1,6 +1,6 @@
 {
-  "short_name": "Serene Countdown",
-  "name": "Serene Countdown - Nature's Tranquil Timer",
+  "short_name": "Birthday Gift",
+  "name": "Birthday Gift - Personalized Birthday Celebration",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#22c55e",
-  "background_color": "#f0fdf4"
+  "theme_color": "#a855f7",
+  "background_color": "#faf5ff"
 }
