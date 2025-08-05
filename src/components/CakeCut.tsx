@@ -37,12 +37,12 @@ const CakeCut: React.FC<CakeCutProps> = ({ onComplete }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="text-center space-y-8">
-        <h2 className="text-5xl md:text-7xl font-bold">
+      <div className="text-center space-y-6 sm:space-y-8 max-w-4xl mx-auto px-4 sm:px-6">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
           🍰 Birthday Cake
         </h2>
         <motion.div
-          className="text-9xl cursor-pointer select-none"
+          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl cursor-pointer select-none"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleCakeSlice}
@@ -65,7 +65,7 @@ const CakeCut: React.FC<CakeCutProps> = ({ onComplete }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <p className="text-lg text-purple-600 mb-4">
+          <p className="text-base sm:text-lg text-purple-600 mb-3 sm:mb-4">
             {cakeCut ? "🎉 Delicious! 🎉" : "Click the cake to cut it!"}
           </p>
         </motion.div>
@@ -75,7 +75,7 @@ const CakeCut: React.FC<CakeCutProps> = ({ onComplete }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <p className="text-xl">
+            <p className="text-lg sm:text-xl">
               You make the world sweeter!
             </p>
             <motion.button

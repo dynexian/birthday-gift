@@ -12,12 +12,13 @@ import ParticleSystem from './components/ParticleSystem';
 import FloatingElements from './components/FloatingElements';
 import AudioPreloader from './components/AudioPreloader';
 import { AudioActivator } from './components/AudioActivator';
+
 import { useCustomCursor } from './hooks/useCustomCursor';
 import { useAudioManager } from './hooks/useAudio';
 
 type Stage = 'preloader' | 'countdown' | 'entry' | 'message' | 'wordcloud' | 'balloons' | 'cake' | 'gallery' | 'thankyou';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [currentStage, setCurrentStage] = useState<Stage>('preloader');
   const [key, setKey] = useState(0); // Add key to force re-render countdown
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
@@ -148,7 +149,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden transition-all duration-1000"
+      style={{
+        background: 'linear-gradient(135deg, rgb(240, 249, 255) 0%, rgb(243, 232, 255) 50%, rgb(252, 231, 243) 100%)'
+      }}
+    >
       {/* Background Elements */}
       <ParticleSystem />
       <FloatingElements />
@@ -329,6 +335,11 @@ const App: React.FC = () => {
       )}
     </div>
   );
+};
+
+// Main App component
+const App: React.FC = () => {
+  return <AppContent />;
 };
 
 export default App;

@@ -190,14 +190,14 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
   if (showCompletion) {
     return (
       <motion.div
-        className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-300 via-purple-300 to-indigo-400 relative"
+        className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-300 via-purple-300 to-indigo-400 relative px-4 sm:px-6"
         style={{ zIndex: 100 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <motion.h2
-          className="text-4xl md:text-6xl font-bold text-white mb-8 text-center"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 sm:mb-8 text-center leading-tight max-w-4xl"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
@@ -206,7 +206,7 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
         </motion.h2>
         
         <motion.div
-          className="text-2xl text-white mb-8 text-center"
+          className="text-xl sm:text-2xl text-white mb-6 sm:mb-8 text-center max-w-2xl"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -220,7 +220,7 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
             e.preventDefault();
             onComplete();
           }}
-          className="bg-white text-purple-600 px-8 py-4 rounded-full text-xl font-semibold shadow-xl hover:shadow-2xl relative z-50 pointer-events-auto"
+          className="bg-white text-purple-600 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-lg sm:text-xl font-semibold shadow-xl hover:shadow-2xl relative z-50 pointer-events-auto"
           style={{ 
             zIndex: 100, 
             cursor: 'pointer' // Override global cursor: none
@@ -339,23 +339,23 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
       
       {/* Instructions */}
       <motion.div
-        className="absolute top-10 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
+        className="absolute top-8 sm:top-10 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-4 max-w-lg"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <h2 className="text-3xl md:text-5xl font-bold text-purple-800 mb-4 drop-shadow-lg">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-purple-800 mb-3 sm:mb-4 drop-shadow-lg leading-tight">
           Pop the Balloons! 🎈
         </h2>
-        <p className="text-lg text-purple-600 drop-shadow-md">
+        <p className="text-base sm:text-lg text-purple-600 drop-shadow-md">
           Click the balloons as they float by! ({poppedBalloons.size}/{targetPopCount})
         </p>
       </motion.div>
       
       {/* Progress bar */}
       <motion.div
-        className="absolute top-32 left-1/2 transform -translate-x-1/2 w-64 h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
+        className="absolute top-28 sm:top-32 left-1/2 transform -translate-x-1/2 w-48 sm:w-56 md:w-64 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

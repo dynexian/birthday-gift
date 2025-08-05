@@ -1,404 +1,377 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAudioManager } from '../hooks/useAudio';
 
 interface WordCloudProps {
   onComplete: () => void;
 }
 
+interface Word {
+  text: string;
+  color: string;
+  size: 'sm' | 'md' | 'lg' | 'xl';
+  category: 'trait' | 'emotion' | 'strength';
+}
+
 const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
   const [showButton, setShowButton] = useState(false);
   const [interactedWords, setInteractedWords] = useState<Set<number>>(new Set());
-  const [hoveredWord, setHoveredWord] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { playSound } = useAudioManager();
 
-  const words = [
-    { text: "Kind", color: "#FF6B6B", size: "text-3xl", weight: 1, depth: 0.8 },
-    { text: "Brave", color: "#4ECDC4", size: "text-5xl", weight: 2, depth: 1.2 },
-    { text: "Funny", color: "#45B7D1", size: "text-4xl", weight: 1.5, depth: 1.0 },
-    { text: "Gentle", color: "#FFA07A", size: "text-3xl", weight: 1, depth: 0.7 },
-    { text: "Magical", color: "#98D8C8", size: "text-6xl", weight: 3, depth: 1.5 },
-    { text: "Caring", color: "#F7DC6F", size: "text-4xl", weight: 1.5, depth: 0.9 },
-    { text: "Creative", color: "#BB8FCE", size: "text-5xl", weight: 2, depth: 1.3 },
-    { text: "Loyal", color: "#85C1E9", size: "text-4xl", weight: 1.5, depth: 1.1 },
-    { text: "Warm", color: "#F8C471", size: "text-3xl", weight: 1, depth: 0.8 },
-    { text: "Beautiful", color: "#F1948A", size: "text-6xl", weight: 3, depth: 1.4 },
-    { text: "Strong", color: "#82E0AA", size: "text-5xl", weight: 2, depth: 1.2 },
-    { text: "Radiant", color: "#D7BDE2", size: "text-4xl", weight: 1.5, depth: 1.0 },
-    { text: "Wise", color: "#AED6F1", size: "text-3xl", weight: 1, depth: 0.9 },
-    { text: "Inspiring", color: "#F8D7DA", size: "text-5xl", weight: 2, depth: 1.3 },
-    { text: "Joyful", color: "#D5F4E6", size: "text-4xl", weight: 1.5, depth: 1.1 },
+  const words: Word[] = [
+    // Personality Traits
+    { text: "Kind", color: "#ff6b6b", size: "lg", category: "trait" },
+    { text: "Creative", color: "#4ecdc4", size: "xl", category: "trait" },
+    { text: "Wise", color: "#45b7d1", size: "md", category: "trait" },
+    { text: "Gentle", color: "#ffa726", size: "md", category: "trait" },
+    { text: "Loyal", color: "#ab47bc", size: "lg", category: "trait" },
+    
+    // Emotions & Feelings
+    { text: "Joyful", color: "#66bb6a", size: "xl", category: "emotion" },
+    { text: "Peaceful", color: "#42a5f5", size: "lg", category: "emotion" },
+    { text: "Radiant", color: "#ef5350", size: "md", category: "emotion" },
+    { text: "Cheerful", color: "#ffca28", size: "lg", category: "emotion" },
+    { text: "Warm", color: "#ff7043", size: "md", category: "emotion" },
+    
+    // Strengths & Qualities
+    { text: "Strong", color: "#26a69a", size: "xl", category: "strength" },
+    { text: "Brave", color: "#5c6bc0", size: "lg", category: "strength" },
+    { text: "Amazing", color: "#ec407a", size: "xl", category: "strength" },
+    { text: "Magical", color: "#9c27b0", size: "lg", category: "strength" },
+    { text: "Beautiful", color: "#f06292", size: "lg", category: "strength" },
   ];
 
-  // Stable background particles
-  const backgroundParticles = Array.from({ length: 20 }, (_, i) => {
-    const seed = i * 142.857;
-    return {
-      size: 3 + (Math.sin(seed) * 4 + 4), // 3-7px
-      top: Math.abs(Math.sin(seed * 2)) * 100,
-      left: Math.abs(Math.sin(seed * 3)) * 100,
-      duration: 15 + (Math.sin(seed * 4) * 10 + 10), // 15-25s
-      delay: Math.abs(Math.sin(seed * 5)) * 8,
-      opacity: 0.1 + Math.abs(Math.sin(seed * 6)) * 0.3, // 0.1-0.4
-      color: words[i % words.length].color,
-    };
-  });
+  const categories = [
+    { id: 'trait', label: 'Traits', icon: '🌟', color: 'from-blue-500 to-purple-500' },
+    { id: 'emotion', label: 'Feelings', icon: '💖', color: 'from-pink-500 to-red-500' },
+    { id: 'strength', label: 'Strengths', icon: '⚡', color: 'from-green-500 to-teal-500' },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowButton(true);
-    }, 5000); // Reduced from 8000ms to 5000ms
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
 
-  const getRandomPosition = (index: number) => {
-    // Simpler, more reliable positioning
-    const positions = [
-      { left: '20%', top: '30%' },
-      { left: '70%', top: '25%' },
-      { left: '50%', top: '40%' },
-      { left: '30%', top: '60%' },
-      { left: '80%', top: '50%' },
-      { left: '40%', top: '80%' },
-      { left: '60%', top: '70%' },
-      { left: '25%', top: '45%' },
-      { left: '75%', top: '75%' },
-      { left: '15%', top: '70%' },
-      { left: '85%', top: '35%' },
-      { left: '55%', top: '20%' },
-      { left: '35%', top: '25%' },
-      { left: '65%', top: '55%' },
-      { left: '45%', top: '65%' },
-    ];
-    
-    const position = positions[index % positions.length];
-    return position;
-  };
-
-  const getFloatingAnimation = (weight: number, index: number) => {
-    // Use deterministic values based on index for stable animations
-    const seed = index * 67.829;
-    const xMovement = Math.sin(seed) * 8; // -8 to 8
-    const rotateAmount = Math.sin(seed * 2) * 4; // -4 to 4 degrees
-    
-    return {
-      y: [0, -12 * weight, 3, 0],
-      x: [0, xMovement, 0],
-      rotate: [0, rotateAmount, 0],
-    };
-  };
-
-  const getDepthStyles = (depth: number, isHovered: boolean, isInteracted: boolean) => {
-    const baseScale = isHovered ? 1.8 : 1;
-    const interactedScale = isInteracted ? 1.1 : 1;
-    
-    return {
-      transform: `translateZ(${depth * 50}px) scale(${baseScale * interactedScale})`,
-      filter: `blur(${Math.max(0, (1 - depth) * 2)}px) brightness(${0.7 + depth * 0.5})`,
-      textShadow: `
-        2px 2px 4px rgba(0,0,0,${0.3 + depth * 0.2}),
-        0 0 ${depth * 20}px rgba(255,255,255,0.3),
-        0 0 ${depth * 40}px currentColor
-      `,
-    };
-  };
-
   const handleWordClick = (index: number) => {
-    const newInteracted = new Set(interactedWords);
-    newInteracted.add(index);
-    setInteractedWords(newInteracted);
+    playSound('button-click', { volume: 0.5 });
+    setInteractedWords(prev => new Set(Array.from(prev).concat(index)));
+  };
+
+  const getSizeClasses = (size: string, textLength: number) => {
+    // Adjust font size based on text length to prevent overflow
+    const lengthFactor = textLength > 8 ? 0.8 : textLength > 6 ? 0.9 : 1;
     
-    // Play sparkle sound for word interaction
-    playSound('sparkle', { volume: 0.8 });
-    
-    // Create ripple effect for clicked words
-    const wordElement = document.getElementById(`word-${index}`);
-    if (wordElement) {
-      wordElement.style.animation = 'none';
-      setTimeout(() => {
-        wordElement.style.animation = 'pulse 0.6s ease-out';
-      }, 10);
+    switch (size) {
+      case 'sm': 
+        return textLength > 10 ? 'text-base sm:text-lg md:text-xl' : 'text-lg sm:text-xl md:text-2xl';
+      case 'md': 
+        return textLength > 8 ? 'text-lg sm:text-xl md:text-2xl lg:text-3xl' : 'text-xl sm:text-2xl md:text-3xl lg:text-4xl';
+      case 'lg': 
+        return textLength > 7 ? 'text-xl sm:text-2xl md:text-3xl lg:text-4xl' : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl';
+      case 'xl': 
+        return textLength > 6 ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl' : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl';
+      default: 
+        return 'text-xl sm:text-2xl';
     }
   };
 
-  const handleWordHover = (index: number, isHovering: boolean) => {
-    setHoveredWord(isHovering ? index : null);
-    
-    // Play subtle hover sound
-    if (isHovering) {
-      playSound('word-hover', { volume: 0.5 });
-    }
-  };
+  const filteredWords = selectedCategory 
+    ? words.filter(word => word.category === selectedCategory)
+    : words;
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100"
-         style={{ perspective: '1000px' }}>
-      
-      {/* Stable Background Particles */}
-      {backgroundParticles.map((particle, i) => (
-        <motion.div
-          key={`particle-${i}`}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            top: `${particle.top}%`,
-            left: `${particle.left}%`,
-            background: `radial-gradient(circle, ${particle.color}${Math.floor(particle.opacity * 255).toString(16)}, transparent)`,
-            opacity: particle.opacity,
-          }}
-          animate={{
-            y: [0, -50, 0],
-            scale: [0.5, 1.2, 0.5],
-            opacity: [particle.opacity * 0.3, particle.opacity, particle.opacity * 0.3],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: particle.delay,
-          }}
-        />
-      ))}
-
-      {/* Depth-based word layers */}
-      <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
-        <motion.h2
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center pt-20 md:pt-24 pb-12 md:pb-16 px-6 relative z-20 leading-tight"
-          style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            textShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
-          }}
-        >
-          These are words that describe you...
-        </motion.h2>
-
-        {words.map((word, index) => {
-          const isHovered = hoveredWord === index;
-          const isInteracted = interactedWords.has(index);
-          const position = getRandomPosition(index);
-          
-          return (
-            <motion.div
-              key={word.text}
-              id={`word-${index}`}
-              className={`absolute font-bold cursor-pointer ${word.size} select-none`}
-              style={{
-                ...position,
-                color: word.color,
-                zIndex: Math.floor(word.depth * 10) + 10,
-                ...getDepthStyles(word.depth, isHovered, isInteracted),
-              }}
-              initial={{ 
-                opacity: 0, 
-                scale: 0,
-                rotateY: -180,
-                z: word.depth * -100,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                rotateY: 0,
-                z: 0,
-                ...getFloatingAnimation(word.weight, index),
-              }}
-              transition={{
-                duration: 1.8,
-                delay: index * 0.15,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                rotateY: { duration: 1.8, delay: index * 0.15, repeat: 0 }
-              }}
-              whileHover={{
-                scale: 1.8,
-                rotateZ: 8,
-                transition: { 
-                  duration: 0.4, 
-                  ease: "easeOut",
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 15
-                },
-              }}
-              onHoverStart={() => handleWordHover(index, true)}
-              onHoverEnd={() => handleWordHover(index, false)}
-              onClick={() => handleWordClick(index)}
-            >
-              {word.text}
-              
-              {/* Enhanced hover effect with depth */}
-              <motion.div
-                className="absolute -inset-4 rounded-full pointer-events-none"
-                initial={{ opacity: 0, scale: 0 }}
-                whileHover={{ 
-                  opacity: 1, 
-                  scale: 1.2,
-                  background: [
-                    `radial-gradient(circle, ${word.color}10 0%, transparent 70%)`,
-                    `radial-gradient(circle, ${word.color}30 0%, transparent 70%)`,
-                    `radial-gradient(circle, ${word.color}10 0%, transparent 70%)`,
-                  ]
-                }}
-                transition={{ 
-                  duration: 0.6,
-                  background: { duration: 2, repeat: Infinity }
-                }}
-              />
-              
-              {/* Interaction sparkle */}
-              {isInteracted && (
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 3
-                  }}
-                >
-                  ✨
-                </motion.div>
-              )}
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {showButton && (
-        <motion.div
-          className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50"
-          initial={{ opacity: 0, y: 100, scale: 0.5, rotateX: 90 }}
-          animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-          transition={{ 
-            duration: 1.2,
-            type: "spring",
-            stiffness: 150,
-            damping: 18,
-            delay: 0.3
-          }}
-        >
-          <motion.button
-            onClick={() => {
-              playSound('button-click', { volume: 0.7 });
-              onComplete();
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+      {/* Background Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(30)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
             }}
-            className="relative bg-gradient-to-r from-purple-500 to-pink-500 text-white px-12 py-6 rounded-full text-xl font-bold shadow-2xl overflow-hidden group cursor-pointer"
-            whileHover={{ 
-              scale: 1.12, 
-              y: -8,
-              boxShadow: "0 25px 80px rgba(147, 51, 234, 0.5)",
-              transition: { duration: 0.3, ease: "easeOut" }
-            }}
-            whileTap={{ scale: 0.95, y: 0 }}
             animate={{
-              boxShadow: [
-                "0 15px 40px rgba(147, 51, 234, 0.3)",
-                "0 20px 60px rgba(147, 51, 234, 0.6)",
-                "0 15px 40px rgba(147, 51, 234, 0.3)",
-              ],
+              y: [0, -50, 0],
+              opacity: [0.1, 0.3, 0.1],
+              scale: [0.5, 1, 0.5],
             }}
             transition={{
-              boxShadow: {
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
+              duration: 8 + Math.random() * 4,
+              repeat: Infinity,
+              delay: Math.random() * 5,
+              ease: "easeInOut"
             }}
+          />
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          <motion.h1
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight"
+            animate={{
+              textShadow: [
+                "0 4px 20px rgba(139, 92, 246, 0.3)",
+                "0 8px 40px rgba(139, 92, 246, 0.6)",
+                "0 4px 20px rgba(139, 92, 246, 0.3)"
+              ]
+            }}
+            transition={{ duration: 3, repeat: Infinity }}
           >
-            {/* Glow effect background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300 group-hover:scale-110" />
-            
-            {/* Primary button background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
-            
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
-              animate={{
-                x: ["-120%", "120%"],
-                skewX: [-20, 20, -20]
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                repeatDelay: 1.5,
-                ease: "easeInOut"
-              }}
-            />
-            
-            {/* Floating particles around button */}
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-white rounded-full pointer-events-none"
-                style={{
-                  left: `${20 + (i * 10)}%`,
-                  top: `${30 + (i % 2) * 40}%`,
-                }}
-                animate={{
-                  y: [-10, -30, -10],
-                  opacity: [0.3, 1, 0.3],
-                  scale: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 1,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
-            
-            <motion.span
-              className="relative z-10 flex items-center gap-2"
-              animate={{ 
-                textShadow: [
-                  "0 2px 10px rgba(255,255,255,0.5)",
-                  "0 4px 20px rgba(255,255,255,0.8)",
-                  "0 2px 10px rgba(255,255,255,0.5)",
-                ]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+            ✨ Words That Describe You ✨
+          </motion.h1>
+          
+          <motion.p
+            className="text-lg sm:text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            Discover the beautiful qualities that make you unique
+          </motion.p>
+        </motion.div>
+
+        {/* Category Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
+        >
+          <motion.button
+            onClick={() => setSelectedCategory(null)}
+            className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 ${
+              selectedCategory === null
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
+                : 'bg-white/80 text-slate-700 hover:bg-white/90 shadow-md hover:shadow-lg'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            🌈 All Words
+          </motion.button>
+          
+          {categories.map((category) => (
+            <motion.button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 ${
+                selectedCategory === category.id
+                  ? `bg-gradient-to-r ${category.color} text-white shadow-lg scale-105`
+                  : 'bg-white/80 text-slate-700 hover:bg-white/90 shadow-md hover:shadow-lg'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Let's continue
-              <motion.span
+              {category.icon} {category.label}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* Words Grid */}
+        <motion.div
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto mb-12 sm:mb-16"
+          layout
+        >
+          <AnimatePresence>
+            {filteredWords.map((word, index) => {
+              const isInteracted = interactedWords.has(index);
+              const sizeClasses = getSizeClasses(word.size, word.text.length);
+              
+              return (
+                <motion.div
+                  key={word.text}
+                  layout
+                  initial={{ opacity: 0, scale: 0.5, rotateY: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  exit={{ opacity: 0, scale: 0.5, rotateY: 90 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }}
+                  className="group relative"
+                >
+                  <motion.button
+                    onClick={() => handleWordClick(index)}
+                    className={`w-full p-3 sm:p-4 md:p-6 rounded-2xl bg-white/90 backdrop-blur-sm border-2 border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:border-white/70 ${
+                      isInteracted ? 'ring-4 ring-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : ''
+                    }`}
+                    style={{
+                      minHeight: word.size === 'xl' ? '160px' : word.size === 'lg' ? '140px' : word.size === 'md' ? '120px' : '100px',
+                      maxHeight: word.size === 'xl' ? '180px' : word.size === 'lg' ? '160px' : word.size === 'md' ? '140px' : '120px'
+                    }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      y: -8,
+                      boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {/* Word Display */}
+                    <motion.div
+                      className="flex flex-col items-center justify-center h-full px-1 sm:px-2"
+                      animate={isInteracted ? {
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 5, -5, 0]
+                      } : {}}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <motion.span
+                        className={`font-bold ${sizeClasses} text-center leading-tight mb-1 sm:mb-2 break-words hyphens-auto overflow-hidden`}
+                        style={{ 
+                          color: word.color,
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
+                          display: '-webkit-box',
+                          WebkitLineClamp: word.size === 'xl' ? 2 : word.size === 'lg' ? 2 : 3,
+                          WebkitBoxOrient: 'vertical' as const,
+                          maxWidth: '100%'
+                        }}
+                        animate={{
+                          textShadow: [
+                            `0 2px 10px ${word.color}40`,
+                            `0 4px 20px ${word.color}60`,
+                            `0 2px 10px ${word.color}40`
+                          ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        {word.text}
+                      </motion.span>
+                      
+                      {/* Category Badge */}
+                      <motion.span
+                        className="text-xs px-2 py-1 rounded-full bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 font-medium mt-auto truncate max-w-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.7 }}
+                        transition={{ delay: 0.5 }}
+                        style={{ fontSize: '0.65rem', lineHeight: '1' }}
+                      >
+                        {categories.find(cat => cat.id === word.category)?.icon} {word.category}
+                      </motion.span>
+                    </motion.div>
+
+                    {/* Interaction Effect */}
+                    {isInteracted && (
+                      <motion.div
+                        className="absolute inset-0 pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        {[...Array(6)].map((_, i) => (
+                          <motion.div
+                            key={i}
+                            className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 to-pink-400"
+                            style={{
+                              top: `${20 + (i * 15)}%`,
+                              left: `${10 + (i * 15)}%`,
+                            }}
+                            animate={{
+                              scale: [0, 1, 0],
+                              opacity: [0, 1, 0],
+                              y: [0, -20, -40],
+                            }}
+                            transition={{
+                              duration: 1.5,
+                              delay: i * 0.1,
+                              repeat: Infinity,
+                              repeatDelay: 2
+                            }}
+                          />
+                        ))}
+                      </motion.div>
+                    )}
+                  </motion.button>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Progress Indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+              <span>Words Discovered</span>
+              <span>{interactedWords.size} / {filteredWords.length}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                initial={{ width: 0 }}
                 animate={{ 
-                  rotate: [0, 15, -15, 0],
-                  scale: [1, 1.2, 1]
+                  width: `${(interactedWords.size / filteredWords.length) * 100}%` 
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Continue Button */}
+        <AnimatePresence>
+          {showButton && (
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.8 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-center"
+            >
+              <motion.button
+                onClick={() => {
+                  playSound('button-click', { volume: 0.7 });
+                  onComplete();
+                }}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 sm:px-12 py-4 sm:py-6 rounded-full text-lg sm:text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300"
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 25px 50px rgba(147, 51, 234, 0.3)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                animate={{
+                  boxShadow: [
+                    "0 10px 30px rgba(147, 51, 234, 0.2)",
+                    "0 20px 40px rgba(147, 51, 234, 0.4)",
+                    "0 10px 30px rgba(147, 51, 234, 0.2)"
+                  ]
                 }}
                 transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: 0.5
+                  boxShadow: { duration: 2, repeat: Infinity }
                 }}
               >
-                ✨
-              </motion.span>
-            </motion.span>
-          </motion.button>
-        </motion.div>
-      )}
-      
-      {/* Custom CSS for pulse animation */}
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.3); }
-          100% { transform: scale(1); }
-        }
-      `}</style>
+                <span className="flex items-center gap-3">
+                  Continue Your Journey
+                  <motion.span
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    ✨
+                  </motion.span>
+                </span>
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

@@ -6,13 +6,34 @@ interface FinalThankYouProps {
 }
 
 const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
+  
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
+      style={{
+        background: 'linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 35%, #eef2ff 70%, #e0e7ff 100%)'
+      }}
     >
+      {/* Animated gradient overlay */}
+      <motion.div
+        className="absolute inset-0 opacity-30"
+        animate={{
+          background: [
+            'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(147, 51, 234, 0.1) 50%, rgba(99, 102, 241, 0.1) 100%)',
+            'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(147, 51, 234, 0.1) 100%)',
+            'linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(99, 102, 241, 0.1) 50%, rgba(236, 72, 153, 0.1) 100%)',
+            'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(147, 51, 234, 0.1) 50%, rgba(99, 102, 241, 0.1) 100%)'
+          ]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
       {/* Animated stars background */}
       {[...Array(50)].map((_, i) => (
         <motion.div
@@ -63,20 +84,22 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
         </motion.div>
       ))}
 
-      <div className="text-center z-10 max-w-4xl mx-auto px-8">
+      <div className="text-center z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
         >
           <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 text-white"
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-8 sm:mb-10 pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-6 sm:pb-8 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 leading-tight ${
+              'text-slate-800'
+            }`}
             animate={{
               textShadow: [
-                "0 0 10px rgba(255,255,255,0.5)",
-                "0 0 20px rgba(255,255,255,0.8)",
-                "0 0 10px rgba(255,255,255,0.5)",
-              ],
+                    "0 0 10px rgba(71, 85, 105, 0.5)",
+                    "0 0 20px rgba(71, 85, 105, 0.8)",
+                    "0 0 10px rgba(71, 85, 105, 0.5)",
+                  ],
             }}
             transition={{
               duration: 3,
@@ -95,14 +118,18 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
           transition={{ duration: 1, delay: 1 }}
         >
           <motion.p
-            className="text-2xl md:text-4xl text-pink-200 leading-relaxed"
+            className={`text-2xl md:text-4xl leading-relaxed ${
+              'text-pink-700'
+            }`}
             whileHover={{ scale: 1.05 }}
           >
             Thank you for being a part of my world.
           </motion.p>
           
           <motion.p
-            className="text-xl md:text-3xl text-purple-200 leading-relaxed"
+            className={`text-xl md:text-3xl leading-relaxed ${
+              'text-purple-700'
+            }`}
             whileHover={{ scale: 1.05 }}
           >
             This was made just for you. 💗
@@ -116,7 +143,9 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
           transition={{ duration: 1, delay: 1.5 }}
         >
           <motion.p
-            className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300"
+            className={`text-3xl md:text-5xl font-bold text-transparent bg-clip-text ${
+              'bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600'
+            }`}
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
             }}

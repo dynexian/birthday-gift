@@ -51,9 +51,7 @@
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     line-height: 1 !important;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    /* Remove transparent background that was causing issues */
     background: none;
-    /* Ensure text doesn't break and stays centered */
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -63,15 +61,6 @@
   .stage-container {
     @apply min-h-screen flex items-center justify-center;
     @apply relative overflow-hidden;
-  }
-
-  .gallery-card {
-    @apply bg-white/80 backdrop-blur-md rounded-2xl;
-    @apply shadow-xl hover:shadow-2xl;
-    @apply border border-white/20;
-    @apply transition-all duration-300 ease-out;
-    @apply hover:scale-105 hover:bg-white/90;
-    @apply p-6 m-4 min-w-[300px] max-w-[400px];
   }
 
   .serene-text {
@@ -137,7 +126,7 @@
   }
 }
 
-/* Custom animations */
+/* Core animations for active components */
 @keyframes sparkle {
   0%, 100% { opacity: 0; transform: scale(0); }
   50% { opacity: 1; transform: scale(1); }
@@ -177,19 +166,6 @@
   }
 }
 
-.sparkle {
-  animation: sparkle 2s ease-in-out infinite;
-}
-
-.leaf-fall {
-  animation: leaf-fall 15s linear infinite;
-}
-
-.petal-drift {
-  animation: petal-drift 12s linear infinite;
-}
-
-/* New stage-specific animations */
 @keyframes glow-pulse {
   0%, 100% { 
     box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
@@ -204,22 +180,22 @@
   100% { background-position: 200% center; }
 }
 
-@keyframes float-up {
-  0% { 
-    transform: translateY(100vh) rotate(0deg);
-    opacity: 0;
-  }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { 
-    transform: translateY(-10vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
 @keyframes twinkle {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
+}
+
+/* Animation classes */
+.sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.leaf-fall {
+  animation: leaf-fall 15s linear infinite;
+}
+
+.petal-drift {
+  animation: petal-drift 12s linear infinite;
 }
 
 .glow-pulse {
@@ -237,118 +213,6 @@
   animation: text-shimmer 2s ease-in-out infinite;
 }
 
-.float-up {
-  animation: float-up 8s linear infinite;
-}
-
 .twinkle {
   animation: twinkle 2s ease-in-out infinite;
-}
-
-/* Scrollbar hiding styles */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Interactive stage styles */
-.rpg-stat-bar {
-  background: linear-gradient(90deg, 
-    rgba(34, 197, 94, 0.8), 
-    rgba(34, 197, 94, 0.6)
-  );
-  position: relative;
-  overflow: hidden;
-}
-
-.rpg-stat-bar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.8), 
-    rgba(255, 255, 255, 0.4)
-  );
-}
-
-/* Journal stage styles */
-.journal-cursor {
-  @apply inline-block w-0.5 h-6 bg-nature-600 ml-1;
-  animation: cursor-blink 1s ease-in-out infinite;
-}
-
-@keyframes cursor-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* Tribute wall styles */
-.tribute-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.tribute-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(34, 197, 94, 0.1),
-    transparent
-  );
-  transform: rotate(45deg);
-  transition: all 0.3s ease;
-  opacity: 0;
-}
-
-.tribute-card:hover::before {
-  opacity: 1;
-  animation: sweep 0.6s ease-out;
-}
-
-@keyframes sweep {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-/* Closing stage styles */
-.cosmic-background {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(79, 70, 229, 0.4) 0%,
-    rgba(147, 51, 234, 0.3) 25%,
-    rgba(219, 39, 119, 0.2) 50%,
-    rgba(15, 23, 42, 0.9) 100%
-  );
-}
-
-.aurora {
-  background: linear-gradient(
-    45deg,
-    rgba(34, 197, 94, 0.3),
-    rgba(59, 130, 246, 0.3),
-    rgba(147, 51, 234, 0.3),
-    rgba(236, 72, 153, 0.3)
-  );
-  background-size: 400% 400%;
-  animation: aurora-dance 8s ease-in-out infinite;
-}
-
-@keyframes aurora-dance {
-  0%, 100% { background-position: 0% 50%; }
-  25% { background-position: 100% 50%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
 }

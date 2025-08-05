@@ -85,14 +85,16 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-8"
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 sm:p-6 md:p-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <motion.h2
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-8 md:mb-12 px-4"
+          className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-center mb-8 sm:mb-10 pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-6 sm:pb-8 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 drop-shadow-lg transition-colors duration-500 ${
+            'text-slate-800'
+          }`}
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -101,6 +103,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
+            lineHeight: '1.2'
           }}
         >
           💝 Memory Gallery 💝
@@ -108,7 +111,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
 
         {/* Navigation Pills */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-12 px-4"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-12 px-2 sm:px-4"
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}

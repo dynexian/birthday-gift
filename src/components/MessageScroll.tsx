@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAudioManager } from '../hooks/useAudio';
 
 interface MessageScrollProps {
@@ -25,7 +25,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
     "Happy Birthday! 🎉🎂✨"
   ];
 
-  // Auto-advance messages every 3 seconds
+  // Auto-advance messages every 4 seconds (increased for better readability)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentMessage(prev => {
@@ -33,40 +33,70 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           setIsComplete(true);
           return prev;
         }
+        // Add sound effect for message transition
+        playSound('page-transition', { volume: 0.2 });
         return prev + 1;
       });
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(timer);
-  }, [messages.length]);
+  }, [messages.length, playSound]);
 
   // Remove auto-complete - let user click the button to proceed
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-sky-50 via-purple-50 to-pink-50">
-      {/* Floating Background Elements */}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Enhanced Floating Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full bg-gradient-to-r from-purple-200/30 to-pink-200/30"
+            className="absolute rounded-full blur-sm"
             style={{
-              width: `${Math.random() * 100 + 50}px`,
-              height: `${Math.random() * 100 + 50}px`,
+              width: `${Math.random() * 80 + 40}px`,
+              height: `${Math.random() * 80 + 40}px`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.1))'
             }}
             animate={{
-              y: [0, -30, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              scale: [1, 1.1, 1],
-              opacity: [0.3, 0.6, 0.3],
+              y: [0, -50, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              scale: [0.8, 1.2, 0.8],
+              opacity: [0.2, 0.7, 0.2],
+              rotate: [0, 180, 360],
             }}
             transition={{
-              duration: 8 + Math.random() * 4,
+              duration: 12 + Math.random() * 6,
               repeat: Infinity,
-              delay: Math.random() * 5,
-              ease: "easeInOut"
+              delay: Math.random() * 8,
+              ease: [0.4, 0.0, 0.2, 1],
+              type: "tween"
+            }}
+          />
+        ))}
+        
+        {/* Magical sparkles */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            className="absolute w-2 h-2 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              background: 'radial-gradient(circle, #a855f7, #8b5cf6)',
+              boxShadow: '0 0 15px #a855f7, 0 0 30px #8b5cf6'
+            }}
+            animate={{
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
+              y: [0, -100],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              delay: i * 0.8,
+              ease: "easeOut"
             }}
           />
         ))}
@@ -74,74 +104,138 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
 
       {/* Instructions */}
       <motion.div
-        className="fixed top-8 left-1/2 transform -translate-x-1/2 z-20 text-center"
+        className="fixed top-6 sm:top-8 left-1/2 transform -translate-x-1/2 z-20 text-center px-4 max-w-md"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         <motion.div
-          className="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/50"
+          className={`backdrop-blur-sm rounded-full px-6 sm:px-8 py-3 sm:py-4 shadow-xl border transition-all duration-500 ${
+            'bg-white/90 border-white/70'
+          }`}
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          <p className="text-lg text-gray-700 font-medium">Reading your birthday messages ✨</p>
+          <p className={`text-base sm:text-lg md:text-xl font-semibold transition-colors duration-500 ${
+            'text-slate-800'
+          }`}
+          style={{
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+          }}>
+            Reading your birthday messages ✨
+          </p>
         </motion.div>
       </motion.div>
 
 
 
       {/* Main Content Area */}
-      <div className="h-screen flex items-center justify-center px-4 md:px-8 relative z-10">
-        <div className="text-center max-w-5xl w-full">
+      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10">
+        <div className="text-center max-w-5xl w-full mx-auto">
           <motion.div
-            key={currentMessage} // Force re-render on message change
-            initial={{ opacity: 0, y: 50, scale: 0.9, rotateX: 10 }}
-            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9, rotateX: -10 }}
+            initial={{ opacity: 0, y: 60, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ 
-              duration: 0.8, 
-              ease: "easeOut",
+              duration: 1.2, 
+              ease: [0.16, 1, 0.3, 1],
               type: "spring",
-              stiffness: 100,
-              damping: 15
+              stiffness: 80,
+              damping: 20
             }}
           >
-            {/* Message Container with Enhanced Visual Effects */}
+            {/* Enhanced Message Container with Advanced Visual Effects */}
             <motion.div
-              className="relative bg-white/70 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50"
+              className={`relative backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 shadow-2xl border transition-all duration-700 mx-2 sm:mx-4 md:mx-6 ${
+                'bg-gradient-to-br from-white/90 via-white/85 to-white/95 border-white/60'
+              }`}
               animate={{ 
                 boxShadow: [
-                  "0 20px 60px rgba(139, 92, 246, 0.15)",
-                  "0 25px 70px rgba(139, 92, 246, 0.25)",
-                  "0 20px 60px rgba(139, 92, 246, 0.15)"
-                ]
+                      "0 25px 80px rgba(139, 92, 246, 0.15), 0 0 60px rgba(236, 72, 153, 0.1)",
+                      "0 35px 100px rgba(139, 92, 246, 0.25), 0 0 80px rgba(236, 72, 153, 0.15)",
+                      "0 25px 80px rgba(139, 92, 246, 0.15), 0 0 60px rgba(236, 72, 153, 0.1)"
+                    ],
+                scale: [1, 1.005, 1],
+                rotateX: [0, 0.5, 0],
               }}
-              transition={{ duration: 4, repeat: Infinity }}
+              transition={{ 
+                boxShadow: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+                scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                rotateX: { duration: 10, repeat: Infinity, ease: "easeInOut" }
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+              }}
             >
               {/* Decorative Corner Elements */}
-              <div className="absolute top-4 left-4 w-6 h-6 border-l-2 border-t-2 border-purple-300 rounded-tl-lg"></div>
-              <div className="absolute top-4 right-4 w-6 h-6 border-r-2 border-t-2 border-purple-300 rounded-tr-lg"></div>
-              <div className="absolute bottom-4 left-4 w-6 h-6 border-l-2 border-b-2 border-purple-300 rounded-bl-lg"></div>
-              <div className="absolute bottom-4 right-4 w-6 h-6 border-r-2 border-b-2 border-purple-300 rounded-br-lg"></div>
+              <div className={`absolute top-3 sm:top-4 left-3 sm:left-4 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-t-2 rounded-tl-lg transition-colors duration-500 ${
+                'border-purple-300'
+              }`}></div>
+              <div className={`absolute top-3 sm:top-4 right-3 sm:right-4 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-t-2 rounded-tr-lg transition-colors duration-500 ${
+                'border-purple-300'
+              }`}></div>
+              <div className={`absolute bottom-3 sm:bottom-4 left-3 sm:left-4 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-b-2 rounded-bl-lg transition-colors duration-500 ${
+                'border-purple-300'
+              }`}></div>
+              <div className={`absolute bottom-3 sm:bottom-4 right-3 sm:right-4 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-b-2 rounded-br-lg transition-colors duration-500 ${
+                'border-purple-300'
+              }`}></div>
               
-              <motion.p
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-relaxed md:leading-relaxed lg:leading-relaxed font-medium text-purple-600 break-words px-4 mb-6"
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  textShadow: [
-                    "0 2px 10px rgba(139, 92, 246, 0.2)",
-                    "0 4px 20px rgba(139, 92, 246, 0.4)", 
-                    "0 2px 10px rgba(139, 92, 246, 0.2)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                {messages[currentMessage]}
-              </motion.p>
-              
-              <div className="mt-8 md:mt-10 text-base md:text-lg text-purple-500 font-semibold">
-                {currentMessage + 1} of {messages.length}
+              <div className="relative min-h-[180px] sm:min-h-[200px] md:min-h-[240px] lg:min-h-[280px] flex items-center justify-center overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={currentMessage}
+                    className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-relaxed font-semibold break-words px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 md:py-5 lg:py-6 mb-6 sm:mb-8 md:mb-10 transition-colors duration-500 absolute w-full ${
+                      'text-slate-800 drop-shadow-md'
+                    }`}
+                    style={{
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(139, 92, 246, 0.2)',
+                      transformStyle: "preserve-3d"
+                    }}
+                    initial={{ 
+                      opacity: 0, 
+                      y: 80, 
+                      scale: 0.8,
+                      rotateX: 15,
+                      filter: "blur(8px) brightness(0.7)"
+                    }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0, 
+                      scale: [0.8, 1.02, 1],
+                      rotateX: 0,
+                      filter: "blur(0px) brightness(1)"
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      y: -80, 
+                      scale: 0.8,
+                      rotateX: -15,
+                      filter: "blur(8px) brightness(0.7)"
+                    }}
+                    transition={{ 
+                      duration: 1.0,
+                      ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuart
+                      scale: { 
+                        duration: 1.5, 
+                        ease: [0.34, 1.56, 0.64, 1], // easeOutBack
+                        times: [0, 0.6, 1]
+                      },
+                      filter: { 
+                        duration: 0.8,
+                        ease: "easeOut"
+                      },
+                      rotateX: {
+                        duration: 1.0,
+                        ease: [0.16, 1, 0.3, 1]
+                      }
+                    }}
+                  >
+                    {messages[currentMessage]}
+                  </motion.p>
+                </AnimatePresence>
               </div>
+              
+              
             </motion.div>
           </motion.div>
         </div>
@@ -150,7 +244,9 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       {/* Completion Section */}
       {isComplete && (
         <motion.div
-          className="fixed inset-0 bg-gradient-to-br from-white/95 via-purple-50/95 to-pink-50/95 backdrop-blur-md flex flex-col items-center justify-center text-center space-y-12 z-40 px-6"
+          className={`fixed inset-0 backdrop-blur-md flex flex-col items-center justify-center text-center space-y-12 z-40 px-6 transition-all duration-500 ${
+            'bg-gradient-to-br from-white/95 via-purple-50/95 to-pink-50/95'
+          }`}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
@@ -184,7 +280,13 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           </div>
 
           <motion.h2
-            className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mb-6 relative z-10"
+            className={`text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold bg-gradient-to-r bg-clip-text text-transparent mb-8 md:mb-10 lg:mb-12 relative z-10 transition-all duration-500 px-6 py-4 ${
+              'from-purple-700 via-pink-700 to-indigo-800'
+            }`}
+            style={{
+              WebkitTextStroke: '1px rgba(0, 0, 0, 0.1)',
+              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+            }}
             initial={{ scale: 0.8, rotateY: -30 }}
             animate={{ 
               scale: 1, 
@@ -205,7 +307,12 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           </motion.h2>
           
           <motion.p
-            className="text-xl md:text-2xl text-gray-700 max-w-3xl leading-relaxed mb-8 relative z-10"
+            className={`text-xl md:text-2xl lg:text-3xl max-w-4xl leading-relaxed mb-10 md:mb-12 lg:mb-16 relative z-10 transition-colors duration-500 px-6 md:px-8 py-4 font-medium rounded-2xl shadow-lg backdrop-blur-md ${
+              'text-slate-800 bg-white/80'
+            }`}
+            style={{
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+            }}
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -218,7 +325,9 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
               playSound('button-click', { volume: 0.7 });
               onComplete();
             }}
-            className="relative px-10 py-5 text-xl font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-2xl cursor-pointer overflow-hidden group z-10"
+            className={`relative px-12 py-6 text-xl md:text-2xl font-bold rounded-full shadow-2xl cursor-pointer overflow-hidden group z-10 transition-all duration-300 ${
+              'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-2 border-white/30'
+            }`}
             initial={{ y: 30, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 200 }}
@@ -226,44 +335,55 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
             whileTap={{ scale: 0.95 }}
           >
             {/* Button Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className={`absolute inset-0 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition-opacity duration-300 ${
+              'bg-gradient-to-r from-purple-500 to-pink-500'
+            }`} />
             
             {/* Button Shimmer Effect */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
-              animate={{ x: [-100, 300] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full"
+              animate={{ x: [-120, 320] }}
+              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5 }}
             />
             
-            <span className="relative z-10">Continue Your Journey ✨</span>
+            <span className="relative z-10 drop-shadow-sm">Continue Your Journey ✨</span>
           </motion.button>
         </motion.div>
       )}
 
       {/* Progress Indicator */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
           transition={{ delay: 1, duration: 0.8 }}
         >
           <motion.div
-            className="bg-white/80 backdrop-blur-sm rounded-full p-4 shadow-lg border border-white/50"
+            className={`backdrop-blur-sm rounded-full p-6 shadow-xl border transition-all duration-500 ${
+              'bg-white/90 border-white/70'
+            }`}
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            <div className="flex flex-col items-center justify-center space-y-2">
-              <div className="w-64 h-3 bg-purple-100 rounded-full overflow-hidden">
+            <div className="flex flex-col items-center justify-center space-y-3">
+              <div className={`w-64 md:w-80 h-4 rounded-full overflow-hidden transition-colors duration-500 ${
+                'bg-slate-200'
+              }`}>
                 <motion.div 
-                  className="h-full bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-full shadow-inner"
+                  className={`h-full rounded-full shadow-inner transition-all duration-500 ${
+                    'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600'
+                  }`}
                   style={{ width: `${((currentMessage + 1) / messages.length) * 100}%` }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
                   animate={{
                     boxShadow: [
-                      "inset 0 2px 4px rgba(139, 92, 246, 0.3)",
-                      "inset 0 4px 8px rgba(139, 92, 246, 0.5)",
-                      "inset 0 2px 4px rgba(139, 92, 246, 0.3)"
-                    ]
+                          "inset 0 2px 4px rgba(139, 92, 246, 0.5)",
+                          "inset 0 4px 8px rgba(139, 92, 246, 0.7)",
+                          "inset 0 2px 4px rgba(139, 92, 246, 0.5)"
+                        ]
+                  }}
+                  transition={{ 
+                    width: { duration: 0.8, ease: "easeOut" },
+                    boxShadow: { duration: 2, repeat: Infinity }
                   }}
                 />
               </div>

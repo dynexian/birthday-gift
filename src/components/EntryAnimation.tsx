@@ -68,18 +68,27 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center space-y-12 px-6 md:px-8 lg:px-12 py-8 md:py-12 relative z-50 max-w-7xl mx-auto">
+    <div className="min-h-screen flex flex-col justify-center items-center space-y-8 sm:space-y-10 md:space-y-12 px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8 md:py-12 relative z-50 max-w-7xl mx-auto">
       {/* Birthday Greeting */}
       <motion.div
-        className="text-center mb-6 md:mb-8"
+        className="text-center mb-4 sm:mb-6 md:mb-8"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: 'easeOut' }}
       >
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent px-4 leading-tight">
+        <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold mb-6 sm:mb-8 md:mb-10 pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 pb-4 sm:pb-6 md:pb-8 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 bg-gradient-to-r leading-tight ${
+          'from-purple-600 via-pink-600 to-indigo-600'
+        } bg-clip-text text-transparent leading-tight drop-shadow-2xl`} style={{
+          WebkitTextStroke: 'none',
+          filter: 'none'
+        }}>
           🎉 Happy Birthday! 🎉
         </h1>
-        <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed px-4">
+        <p className={`text-xl md:text-2xl lg:text-3xl font-medium max-w-3xl mx-auto leading-relaxed px-4 md:px-8 py-2 rounded-2xl shadow-lg backdrop-blur-sm ${
+          'text-gray-700 bg-white/70'
+        }`} style={{
+          textShadow: 'none'
+        }}>
           Today is your special day! Let's celebrate! ✨
         </p>
       </motion.div>
@@ -93,7 +102,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           className="text-center mb-12 md:mb-16 max-w-6xl mx-auto px-4 md:px-6"
         >
           <motion.div
-            className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-8 md:p-10 lg:p-12 border border-white/30 shadow-xl backdrop-blur-sm mx-4 md:mx-6"
+            className={`rounded-3xl p-8 md:p-10 lg:p-12 border shadow-xl backdrop-blur-sm mx-4 md:mx-6 ${
+              'bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-white/30'
+            }`}
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
@@ -112,50 +123,83 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
               🎂
             </motion.div>
             
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+            <h2 className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 bg-gradient-to-r ${
+              'from-indigo-600 to-purple-600'
+            } bg-clip-text text-transparent leading-tight`} style={{
+              WebkitTextStroke: 'none',
+              filter: 'none'
+            }}>
               You've Been Amazing for...
             </h2>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
               <motion.div 
-                className="bg-white/60 rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center"
+                className={`rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center shadow-lg ${
+                  'bg-white/60'
+                }`}
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="text-xl md:text-2xl lg:text-3xl font-bold text-purple-600 leading-tight">
+                <div className={`text-xl md:text-2xl lg:text-3xl font-bold leading-tight ${
+                  'text-purple-600'
+                }`} style={{
+                  textShadow: 'none'
+                }}>
                   {ageData.years.toLocaleString()}
                 </div>
-                <div className="text-xs md:text-sm font-medium text-gray-600 mt-1">Years</div>
+                <div className={`text-xs md:text-sm font-medium mt-1 ${
+                  'text-gray-600'
+                }`}>Years</div>
               </motion.div>
               
               <motion.div 
-                className="bg-white/60 rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center"
+                className={`rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center shadow-lg ${
+                  'bg-white/60'
+                }`}
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-600 leading-tight">
+                <div className={`text-xl md:text-2xl lg:text-3xl font-bold leading-tight ${
+                  'text-blue-600'
+                }`} style={{
+                  textShadow: 'none'
+                }}>
                   {ageData.totalDays.toLocaleString()}
                 </div>
-                <div className="text-xs md:text-sm font-medium text-gray-600 mt-1">Days</div>
+                <div className={`text-xs md:text-sm font-medium mt-1 ${
+                  'text-gray-600'
+                }`}>Days</div>
               </motion.div>
               
               <motion.div 
-                className="bg-white/60 rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center"
+                className={`rounded-xl p-4 backdrop-blur-sm min-h-[90px] flex flex-col justify-center shadow-lg ${
+                  'bg-white/60'
+                }`}
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="text-lg md:text-xl lg:text-2xl font-bold text-pink-600 leading-tight break-all">
+                <div className={`text-lg md:text-xl lg:text-2xl font-bold leading-tight break-all ${
+                  'text-pink-600'
+                }`} style={{
+                  textShadow: 'none'
+                }}>
                   {ageData.totalHours.toLocaleString()}
                 </div>
-                <div className="text-xs md:text-sm font-medium text-gray-600 mt-1">Hours</div>
+                <div className={`text-xs md:text-sm font-medium mt-1 ${
+                  'text-gray-600'
+                }`}>Hours</div>
               </motion.div>
               
               <motion.div 
-                className="bg-white/60 rounded-xl p-2 md:p-3 backdrop-blur-sm min-h-[120px] flex flex-col justify-center"
+                className={`rounded-xl p-2 md:p-3 backdrop-blur-sm min-h-[120px] flex flex-col justify-center shadow-lg ${
+                  'bg-white/60'
+                }`}
                 whileHover={{ scale: 1.05 }}
               >
                 <div className="relative min-h-[60px] flex items-center justify-center overflow-hidden px-1">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={ageData.totalMinutes}
-                      className="text-sm md:text-base lg:text-lg font-bold text-green-600 absolute leading-tight text-center w-full whitespace-nowrap"
+                      className={`font-bold absolute leading-tight text-center w-full whitespace-nowrap ${
+                        'text-green-600'
+                      } text-sm md:text-base lg:text-lg`}
                       variants={digitVariants}
                       initial="enter"
                       animate="center"
@@ -163,19 +207,24 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
                       transition={{ duration: 0.3 }}
                       style={{ 
                         fontSize: ageData.totalMinutes.toString().length > 8 ? 'clamp(0.7rem, 2vw, 1rem)' : undefined,
-                        transform: ageData.totalMinutes.toString().length > 8 ? 'scale(0.85)' : undefined
+                        transform: ageData.totalMinutes.toString().length > 8 ? 'scale(0.85)' : undefined,
+                        textShadow: 'none'
                       }}
                     >
                       {ageData.totalMinutes.toLocaleString()}
                     </motion.div>
                   </AnimatePresence>
                 </div>
-                <div className="text-xs md:text-sm font-medium text-gray-600 mt-1 text-center">Minutes</div>
+                <div className={`text-xs md:text-sm font-medium mt-1 text-center ${
+                  'text-gray-600'
+                }`}>Minutes</div>
               </motion.div>
             </div>
             
             <motion.p 
-              className="text-lg md:text-xl text-gray-700 font-medium leading-relaxed"
+              className={`text-lg md:text-xl font-medium leading-relaxed ${
+                'text-gray-700'
+              }`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
@@ -185,7 +234,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={ageData.totalSeconds}
-                    className="font-bold text-purple-600"
+                    className={`font-bold ${
+                      'text-purple-600'
+                    }`}
                     variants={digitVariants}
                     initial="enter"
                     animate="center"
@@ -200,7 +251,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
             </motion.p>
             
             <motion.p
-              className="text-base md:text-lg text-indigo-600 font-semibold mt-3 italic"
+              className={`text-base md:text-lg font-semibold mt-3 italic ${
+                'text-indigo-600'
+              }`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5 }}
@@ -245,7 +298,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
               console.log('Reset button clicked!');
               onReset();
             }}
-            className="group relative px-8 py-4 text-lg font-medium text-gray-700 bg-white/70 backdrop-blur-md rounded-full shadow-lg hover:shadow-xl border border-gray-200/50 cursor-pointer overflow-hidden"
+            className={`group relative px-8 py-4 text-lg font-medium backdrop-blur-md rounded-full shadow-lg hover:shadow-xl border cursor-pointer overflow-hidden ${
+              'text-gray-700 bg-white/70 border-gray-200/50'
+            }`}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, delay: 2, type: "spring", stiffness: 150 }}
@@ -254,9 +309,11 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
             style={{ pointerEvents: 'auto', cursor: 'pointer', position: 'relative', zIndex: 9999 }}
           >
             {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
+            <div className={`absolute inset-0 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-300 ${
+              'bg-gradient-to-r from-gray-200 to-gray-300'
+            }`} />
             
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 flex items-center gap-2 font-semibold">
               <motion.span
                 animate={{ x: [-2, 0, -2] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -274,7 +331,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
             console.log('Complete button clicked!');
             onComplete();
           }}
-          className="group relative px-10 py-5 text-xl font-bold text-white bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full shadow-2xl cursor-pointer overflow-hidden"
+            className={`group relative px-12 py-6 text-2xl font-extrabold text-white rounded-full shadow-2xl cursor-pointer overflow-hidden ring-4 ring-purple-400/30 ring-offset-2 ring-offset-slate-900 transition-all duration-300 ${
+              'bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500'
+            }`}
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 2.2, type: "spring", stiffness: 150 }}
@@ -287,7 +346,9 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           style={{ pointerEvents: 'auto', cursor: 'pointer', position: 'relative', zIndex: 9999 }}
         >
           {/* Glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110" />
+          <div className={`absolute inset-0 rounded-full blur-lg opacity-70 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110 ${
+            'bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400'
+          }`} />
           
           {/* Shimmer effect */}
           <motion.div
@@ -297,8 +358,8 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           />
           
           {/* Button content */}
-          <span className="relative z-10 flex items-center gap-3">
-            Let's Begin the Celebration!
+          <span className="relative z-10 flex items-center gap-3 tracking-tight drop-shadow-xl">
+            <span className="hidden md:inline">Let's begin the celebration!</span>
             <motion.span
               animate={{ 
                 rotate: [0, 20, -20, 0],
