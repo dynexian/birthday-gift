@@ -104,6 +104,7 @@ export const useCustomCursor = () => {
       // Create click explosion particles
       for (let i = 0; i < 12; i++) {
         const angle = (i / 12) * Math.PI * 2;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const velocity = 2 + Math.random() * 3;
         clickParticles.current.push({
           x: mouseX + Math.cos(angle) * 5,

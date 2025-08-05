@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface AudioPreloaderProps {
@@ -17,46 +17,46 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
   const [currentlyLoading, setCurrentlyLoading] = useState<string>('');
   const [isComplete, setIsComplete] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const hasStartedRef = useRef(false);
 
-  const audioFiles: AudioFile[] = [
+  const audioFiles: AudioFile[] = useMemo(() => [
     // Background Music
-    { key: 'theme-birthday', path: '/audio/music/theme-birthday.mp3', type: 'music' },
-    { key: 'celebration', path: '/audio/music/celebration.mp3', type: 'music' },
-    { key: 'gentle-piano', path: '/audio/music/gentle-piano.mp3', type: 'music' },
-    { key: 'ambient-magical', path: '/audio/music/ambient-magical.mp3', type: 'music' },
+    { key: 'theme-birthday', path: `${process.env.PUBLIC_URL}/audio/music/theme-birthday.mp3`, type: 'music' },
+    { key: 'celebration', path: `${process.env.PUBLIC_URL}/audio/music/celebration.mp3`, type: 'music' },
+    { key: 'gentle-piano', path: `${process.env.PUBLIC_URL}/audio/music/gentle-piano.mp3`, type: 'music' },
+    { key: 'ambient-magical', path: `${process.env.PUBLIC_URL}/audio/music/ambient-magical.mp3`, type: 'music' },
     
     // Sound Effects
-    { key: 'balloon-pop', path: '/audio/sounds/balloon-pop.mp3', type: 'sound' },
-    { key: 'button-click', path: '/audio/sounds/button-click.mp3', type: 'sound' },
-    { key: 'cake-cut', path: '/audio/sounds/cake-cut.mp3', type: 'sound' },
-    { key: 'happy-birthday', path: '/audio/sounds/happy-birthday.mp3', type: 'sound' },
-    { key: 'sparkle', path: '/audio/sounds/sparkle.mp3', type: 'sound' },
-    { key: 'word-hover', path: '/audio/sounds/word-hover.mp3', type: 'sound' },
-    { key: 'confetti', path: '/audio/sounds/confetti.mp3', type: 'sound' },
-    { key: 'countdown-tick', path: '/audio/sounds/countdown-tick.mp3', type: 'sound' },
-    { key: 'countdown-complete', path: '/audio/sounds/countdown-complete.mp3', type: 'sound' },
-    { key: 'page-transition', path: '/audio/sounds/page-transition.mp3', type: 'sound' },
-  ];
+    { key: 'balloon-pop', path: `${process.env.PUBLIC_URL}/audio/sounds/balloon-pop.mp3`, type: 'sound' },
+    { key: 'button-click', path: `${process.env.PUBLIC_URL}/audio/sounds/button-click.mp3`, type: 'sound' },
+    { key: 'cake-cut', path: `${process.env.PUBLIC_URL}/audio/sounds/cake-cut.mp3`, type: 'sound' },
+    { key: 'happy-birthday', path: `${process.env.PUBLIC_URL}/audio/sounds/happy-birthday.mp3`, type: 'sound' },
+    { key: 'sparkle', path: `${process.env.PUBLIC_URL}/audio/sounds/sparkle.mp3`, type: 'sound' },
+    { key: 'word-hover', path: `${process.env.PUBLIC_URL}/audio/sounds/word-hover.mp3`, type: 'sound' },
+    { key: 'confetti', path: `${process.env.PUBLIC_URL}/audio/sounds/confetti.mp3`, type: 'sound' },
+    { key: 'countdown-tick', path: `${process.env.PUBLIC_URL}/audio/sounds/countdown-tick.mp3`, type: 'sound' },
+    { key: 'countdown-complete', path: `${process.env.PUBLIC_URL}/audio/sounds/countdown-complete.mp3`, type: 'sound' },
+    { key: 'page-transition', path: `${process.env.PUBLIC_URL}/audio/sounds/page-transition.mp3`, type: 'sound' },
+  ], []);
 
-  useEffect(() => {
-    setTotalCount(audioFiles.length);
-    preloadAudio();
-  }, []);
-
-  const preloadAudio = async () => {
-    let loadedFiles = 0;
+  const preloadAudio = useCallback(async () => {
+    console.log(`🚀 AudioPreloader: Starting to preload ${audioFiles.length} files`);
+    console.log(`📁 AudioPreloader: Files to load:`, audioFiles.map(f => f.key));
     const loadPromises: Promise<void>[] = [];
 
     for (const audioFile of audioFiles) {
       const loadPromise = new Promise<void>((resolve) => {
+        console.log(`AudioPreloader: Loading ${audioFile.key} from ${audioFile.path}`);
         setCurrentlyLoading(audioFile.key);
         
         const audio = new Audio();
         audio.preload = 'auto';
         
         const onLoad = () => {
-          loadedFiles++;
-          setLoadedCount(loadedFiles);
+          console.log(`AudioPreloader: Successfully loaded ${audioFile.key}`);
+          console.log(`AudioPreloader: Audio readyState for ${audioFile.key}:`, audio.readyState);
+          console.log(`AudioPreloader: Audio duration for ${audioFile.key}:`, audio.duration);
+          setLoadedCount(prev => prev + 1);
           setCurrentlyLoading('');
           
           // Store preloaded audio globally for later use
@@ -64,22 +64,31 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
             window.preloadedAudio = {};
           }
           window.preloadedAudio[audioFile.key] = audio;
+          console.log(`AudioPreloader: Stored ${audioFile.key} in window.preloadedAudio`);
+          console.log(`AudioPreloader: Current keys in preloadedAudio:`, Object.keys(window.preloadedAudio));
+          
+          // Test if the stored audio can actually be played
+          const testClone = audio.cloneNode() as HTMLAudioElement;
+          testClone.volume = 0.01; // Very quiet test
+          testClone.play().then(() => {
+            console.log(`✅ AudioPreloader: Test play successful for ${audioFile.key}`);
+          }).catch((testError) => {
+            console.warn(`⚠️ AudioPreloader: Test play failed for ${audioFile.key}:`, testError);
+          });
           
           resolve();
         };
 
         const onError = () => {
-          console.warn(`Failed to load audio: ${audioFile.path}`);
-          loadedFiles++;
-          setLoadedCount(loadedFiles);
+          console.warn(`AudioPreloader: Failed to load ${audioFile.key} from ${audioFile.path}`);
+          setLoadedCount(prev => prev + 1);
           setCurrentlyLoading('');
           resolve(); // Don't fail the entire process for one file
         };
 
         const onTimeout = () => {
-          console.warn(`Timeout loading audio: ${audioFile.path}`);
-          loadedFiles++;
-          setLoadedCount(loadedFiles);
+          console.warn(`AudioPreloader: Timeout loading ${audioFile.key} from ${audioFile.path}`);
+          setLoadedCount(prev => prev + 1);
           setCurrentlyLoading('');
           resolve();
         };
@@ -111,6 +120,9 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
     try {
       await Promise.all(loadPromises);
       
+      console.log(`AudioPreloader: Finished preloading. Final preloadedAudio object:`, window.preloadedAudio);
+      console.log(`AudioPreloader: Total files in preloadedAudio:`, Object.keys(window.preloadedAudio || {}).length);
+      
       // Show completion state briefly before calling onComplete
       setIsComplete(true);
       setTimeout(() => {
@@ -118,14 +130,27 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
       }, 1000);
       
     } catch (error) {
-      console.error('Error preloading audio:', error);
+      console.error('AudioPreloader: Error preloading audio:', error);
       setHasError(true);
       // Still allow the app to continue after a delay
       setTimeout(() => {
         onComplete();
       }, 2000);
     }
-  };
+  }, [audioFiles, onComplete]);
+
+  useEffect(() => {
+    // Prevent multiple executions
+    if (hasStartedRef.current) {
+      console.log('AudioPreloader: Already started, skipping...');
+      return;
+    }
+    
+    hasStartedRef.current = true;
+    console.log('AudioPreloader: Starting preload process...');
+    setTotalCount(audioFiles.length);
+    preloadAudio();
+  }, []); // Empty dependency array - only run once
 
   const skipPreloader = () => {
     setIsComplete(true);

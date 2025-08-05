@@ -42,10 +42,8 @@ export const useAudio = (src: string, options: AudioOptions = {}) => {
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
 
-    if (autoPlay && isLoaded) {
-      play();
-    }
-
+    // Auto play is handled by setting the autoplay attribute, not calling play() directly here
+    
     return () => {
       audio.removeEventListener('loadeddata', handleLoadedData);
       audio.removeEventListener('ended', handleEnded);
@@ -56,7 +54,8 @@ export const useAudio = (src: string, options: AudioOptions = {}) => {
       }
       audio.pause();
     };
-  }, [src, autoPlay, isLoaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src, autoPlay, isLoaded, fadeDuration]);
 
   const fadeVolume = (targetVolume: number, duration: number) => {
     if (!audioRef.current) return;
@@ -148,69 +147,81 @@ export const useAudio = (src: string, options: AudioOptions = {}) => {
 export const useAudioManager = () => {
   const [currentBackgroundMusic, setCurrentBackgroundMusic] = useState<string | null>(null);
   const audioInstances = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const lastPlayedRef = useRef<Record<string, number>>({});
 
   const getPreloadedAudio = (soundKey: string): HTMLAudioElement | null => {
     // Try to get preloaded audio first
-    if (window.preloadedAudio && window.preloadedAudio[soundKey]) {
-      return window.preloadedAudio[soundKey];
+    console.log(`🔍 getPreloadedAudio: Looking for ${soundKey}`);
+    console.log(`🔍 window.preloadedAudio exists:`, !!window.preloadedAudio);
+    
+    if (window.preloadedAudio) {
+      console.log(`🔍 Available keys in preloadedAudio:`, Object.keys(window.preloadedAudio));
+      if (window.preloadedAudio[soundKey]) {
+        console.log(`✅ Found preloaded audio for: ${soundKey}`);
+        return window.preloadedAudio[soundKey];
+      } else {
+        console.log(`❌ No preloaded audio found for: ${soundKey}`);
+      }
+    } else {
+      console.log(`❌ window.preloadedAudio does not exist`);
     }
+    
     return null;
   };
 
   const playSound = (soundKey: string, options?: AudioOptions) => {
-    // This will be populated when we create the audio files
+    console.log(`🔊 playSound called with: ${soundKey}`, options);
+    
+    // Smart throttling - different intervals for different sound types
+    const now = Date.now();
+    const lastPlayed = lastPlayedRef.current[soundKey] || 0;
+    
+    // Define minimum intervals based on sound type
+    const intervalMap: Record<string, number> = {
+      'countdown-tick': 900,        // 900ms for countdown (allows 1 per second)
+      'countdown-complete': 50,     // Short for completion sounds
+      'word-hover': 150,           // Prevent hover spam
+      'button-click': 100,         // Standard button throttle
+      'sparkle': 80,              // Short for sparkle effects
+      'page-transition': 200,      // Longer for page transitions
+      'balloon-pop': 100,         // Standard for balloon pops
+      'confetti': 150,            // Medium for confetti
+      'cake-cut': 50,             // Short for cut sounds
+      'happy-birthday': 1000,      // Longer for birthday song
+    };
+    
+    const minInterval = intervalMap[soundKey] || 100; // Default 100ms
+    
+    if (now - lastPlayed < minInterval) {
+      console.log(`⏱️ Throttling ${soundKey} - too soon (${now - lastPlayed}ms < ${minInterval}ms)`);
+      return;
+    }
+    
+    lastPlayedRef.current[soundKey] = now;
+    
+    // Sound paths mapping
     const soundMap: Record<string, string> = {
-      'balloon-pop': '/audio/sounds/balloon-pop.mp3',
-      'button-click': '/audio/sounds/button-click.mp3',
-      'word-hover': '/audio/sounds/word-hover.mp3',
-      'page-transition': '/audio/sounds/page-transition.mp3',
-      'cake-cut': '/audio/sounds/cake-cut.mp3',
-      'happy-birthday': '/audio/sounds/happy-birthday.mp3',
-      'confetti': '/audio/sounds/confetti.mp3',
-      'sparkle': '/audio/sounds/sparkle.mp3',
-      'countdown-tick': '/audio/sounds/countdown-tick.mp3',
-      'countdown-complete': '/audio/sounds/countdown-complete.mp3',
+      'balloon-pop': `${process.env.PUBLIC_URL}/audio/sounds/balloon-pop.mp3`,
+      'button-click': `${process.env.PUBLIC_URL}/audio/sounds/button-click.mp3`,
+      'word-hover': `${process.env.PUBLIC_URL}/audio/sounds/word-hover.mp3`,
+      'page-transition': `${process.env.PUBLIC_URL}/audio/sounds/page-transition.mp3`,
+      'cake-cut': `${process.env.PUBLIC_URL}/audio/sounds/cake-cut.mp3`,
+      'happy-birthday': `${process.env.PUBLIC_URL}/audio/sounds/happy-birthday.mp3`,
+      'confetti': `${process.env.PUBLIC_URL}/audio/sounds/confetti.mp3`,
+      'sparkle': `${process.env.PUBLIC_URL}/audio/sounds/sparkle.mp3`,
+      'countdown-tick': `${process.env.PUBLIC_URL}/audio/sounds/countdown-tick.mp3`,
+      'countdown-complete': `${process.env.PUBLIC_URL}/audio/sounds/countdown-complete.mp3`,
     };
 
-    // Try to use preloaded audio first
-    let audio = getPreloadedAudio(soundKey);
-    
-    if (audio) {
-      // Clone the preloaded audio for one-time use
-      const audioClone = audio.cloneNode() as HTMLAudioElement;
-      
-      // Set specific volumes for different sound types
-      let defaultVolume = 0.8; // Increased default volume
-      
-      // Specific volume adjustments for quieter sounds
-      const volumeMap: Record<string, number> = {
-        'word-hover': 0.6,
-        'sparkle': 0.9,
-        'button-click': 0.7,
-        'countdown-tick': 0.5,
-        'balloon-pop': 0.6,
-        'confetti': 0.8,
-        'page-transition': 0.5,
-        'cake-cut': 0.7,
-        'happy-birthday': 0.8,
-        'countdown-complete': 0.8
-      };
-      
-      audioClone.volume = options?.volume ?? volumeMap[soundKey] ?? defaultVolume;
-      audioClone.currentTime = 0;
-      audioClone.play().catch((error) => {
-        console.error(`Failed to play preloaded sound: ${soundKey}`, error);
-      });
-    } else {
-      // Fallback to creating new audio element
+    // Helper function to create new audio (defined inside playSound for access to soundMap)
+    const createNewAudio = () => {
       const soundPath = soundMap[soundKey];
       if (!soundPath) {
-        console.warn(`Sound key "${soundKey}" not found`);
+        console.warn(`❌ Sound key "${soundKey}" not found in soundMap`);
         return;
       }
 
-      // Use same volume logic as above
-      let defaultVolume = 0.8;
+      // Volume map for different sound types
       const volumeMap: Record<string, number> = {
         'word-hover': 0.6,
         'sparkle': 0.9,
@@ -225,19 +236,84 @@ export const useAudioManager = () => {
       };
 
       const newAudio = new Audio(soundPath);
-      newAudio.volume = options?.volume ?? volumeMap[soundKey] ?? defaultVolume;
-      newAudio.play().catch((error) => {
-        console.error(`Failed to play new sound: ${soundKey}`, error);
-      });
+      const finalVolume = options?.volume ?? volumeMap[soundKey] ?? 0.8;
+      newAudio.volume = finalVolume;
+      
+      console.log(`🎵 Playing new audio ${soundKey} from ${soundPath} at volume ${finalVolume}`);
+      const playPromise = newAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log(`✅ Successfully playing new sound: ${soundKey}`);
+        }).catch((error) => {
+          console.error(`❌ Failed to play new sound: ${soundKey}`, error);
+        });
+      }
+    };
+
+    // Try to use preloaded audio first
+    let audio = getPreloadedAudio(soundKey);
+    console.log(`🔍 Preloaded audio for ${soundKey}:`, audio ? 'FOUND' : 'NOT FOUND');
+    
+    if (audio) {
+      console.log(`📂 Using preloaded audio for ${soundKey}`);
+      try {
+        // Clone the preloaded audio for one-time use
+        const audioClone = audio.cloneNode() as HTMLAudioElement;
+        
+        // Ensure the clone has the same source
+        if (!audioClone.src && audio.src) {
+          audioClone.src = audio.src;
+        }
+        
+        // Set specific volumes for different sound types
+        const volumeMap: Record<string, number> = {
+          'word-hover': 0.6,
+          'sparkle': 0.9,
+          'button-click': 0.7,
+          'countdown-tick': 0.5,
+          'balloon-pop': 0.6,
+          'confetti': 0.8,
+          'page-transition': 0.5,
+          'cake-cut': 0.7,
+          'happy-birthday': 0.8,
+          'countdown-complete': 0.8
+        };
+        
+        const finalVolume = options?.volume ?? volumeMap[soundKey] ?? 0.8;
+        audioClone.volume = finalVolume;
+        audioClone.currentTime = 0;
+        
+        console.log(`🎵 Playing preloaded ${soundKey} at volume ${finalVolume}`);
+        
+        // Add more robust play handling
+        const playPromise = audioClone.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            console.log(`✅ Successfully playing preloaded sound: ${soundKey}`);
+          }).catch((error) => {
+            console.error(`❌ Failed to play preloaded sound: ${soundKey}`, error);
+            // Fallback to new audio if preloaded fails
+            console.log(`🔄 Trying fallback for ${soundKey}`);
+            createNewAudio();
+          });
+        }
+      } catch (cloneError) {
+        console.error(`❌ Error cloning audio for ${soundKey}:`, cloneError);
+        console.log(`🔄 Trying fallback for ${soundKey}`);
+        createNewAudio();
+      }
+    } else {
+      console.log(`🆕 Creating new audio element for ${soundKey}`);
+      createNewAudio();
     }
   };
 
   const playBackgroundMusic = (musicKey: string, options?: AudioOptions) => {
     const musicMap: Record<string, string> = {
-      'theme-birthday': '/audio/music/theme-birthday.mp3',
-      'ambient-magical': '/audio/music/ambient-magical.mp3',
-      'celebration': '/audio/music/celebration.mp3',
-      'gentle-piano': '/audio/music/gentle-piano.mp3',
+      'theme-birthday': `${process.env.PUBLIC_URL}/audio/music/theme-birthday.mp3`,
+      'ambient-magical': `${process.env.PUBLIC_URL}/audio/music/ambient-magical.mp3`,
+      'celebration': `${process.env.PUBLIC_URL}/audio/music/celebration.mp3`,
+      'gentle-piano': `${process.env.PUBLIC_URL}/audio/music/gentle-piano.mp3`,
     };
 
     // Stop current background music if playing
@@ -263,7 +339,7 @@ export const useAudioManager = () => {
     audio.currentTime = 0;
     
     // Play audio
-    audio.play().catch((error) => {
+    audio.play().catch((error: any) => {
       console.error(`Failed to play background music: ${musicKey}`, error);
     });
 

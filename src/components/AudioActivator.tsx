@@ -9,19 +9,62 @@ interface AudioActivatorProps {
 export const AudioActivator: React.FC<AudioActivatorProps> = ({ onActivate }) => {
   const { playSound } = useAudioManager();
   
-  const handleClick = () => {
-    // Enable audio context
-    const audio = new Audio();
-    audio.volume = 0;
-    audio.play().then(() => {
-      // Audio context successfully activated
-      // Play a confirmation sound
+  const handleClick = async () => {
+    console.log('🎵 AudioActivator clicked - enabling audio');
+    
+    try {
+      // Test 1: Check AudioContext state and resume if needed
+      if (window.AudioContext || (window as any).webkitAudioContext) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const audioContext = new AudioContextClass();
+        console.log('🔊 AudioContext state:', audioContext.state);
+        
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+          console.log('✅ AudioContext resumed');
+        }
+      }
+      
+      // Test 2: Basic audio context activation with user gesture
+      const testAudio = new Audio();
+      testAudio.volume = 0.01; // Very quiet test
+      testAudio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Djr2geBT2N0+/Yfi4FLnHA6tyWTQsQUr7l5Z1SFApEo9vmr2UbBzyQ1+7Sghwe';
+      
+      await testAudio.play();
+      console.log('✅ Basic audio play successful');
+      testAudio.pause();
+      
+      // Test 3: Try to play actual audio file directly
+      const directAudio = new Audio(`${process.env.PUBLIC_URL}/audio/sounds/button-click.mp3`);
+      directAudio.volume = 0.7;
+      const playPromise = directAudio.play();
+      
+      if (playPromise !== undefined) {
+        await playPromise;
+        console.log('✅ Direct audio file play successful');
+      }
+      
+      // Test 4: Check preloaded audio
+      console.log('📂 Checking window.preloadedAudio:', window.preloadedAudio);
+      if (window.preloadedAudio) {
+        console.log('📂 Keys in preloadedAudio:', Object.keys(window.preloadedAudio));
+      }
+      
+      // Test 5: Try useAudioManager after a short delay
       setTimeout(() => {
+        console.log('🎮 Testing playSound from useAudioManager');
+        playSound('button-click', { volume: 0.7 });
+      }, 200);
+      
+    } catch (error) {
+      console.error('❌ Audio activation error:', error);
+      
+      // Fallback: Try direct audio anyway
+      setTimeout(() => {
+        console.log('🔄 Fallback: Trying playSound anyway');
         playSound('button-click', { volume: 0.7 });
       }, 100);
-    }).catch(() => {
-      // Audio activation failed, but continue anyway
-    });
+    }
     
     onActivate();
   };

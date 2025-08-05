@@ -1,5 +1,12 @@
 // Global TypeScript type definitions for the Serene Countdown project
 
+// Extend Window interface to include our preloaded audio
+declare global {
+  interface Window {
+    preloadedAudio?: Record<string, HTMLAudioElement>;
+  }
+}
+
 export interface AudioFile {
   key: string;
   path: string;

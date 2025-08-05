@@ -72,8 +72,10 @@ const AppContent: React.FC = () => {
     const silentAudio = new Audio();
     silentAudio.volume = 0;
     silentAudio.play().then(() => {
+      console.log('Audio context enabled successfully');
       setIsAudioEnabled(true);
-    }).catch(() => {
+    }).catch((error) => {
+      console.warn('Audio context enablement failed:', error);
       // Audio context still blocked, but we set it as enabled anyway
       setIsAudioEnabled(true);
     });
@@ -99,6 +101,13 @@ const AppContent: React.FC = () => {
     };
   }, [enableAudioContext, isAudioEnabled]);
 
+  const restartCountdown = React.useCallback(() => {
+    console.log('Restarting countdown');
+    stopAllAudio(); // Stop all audio when restarting
+    setCurrentStage('countdown');
+    setKey(prev => prev + 1); // Force re-render with new countdown time
+  }, [stopAllAudio]);
+
   // Add keyboard listener to reset to countdown (press 'R' key)
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -109,7 +118,7 @@ const AppContent: React.FC = () => {
     
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
+  }, [restartCountdown]);
 
   const stageVariants = {
     enter: { opacity: 0, scale: 0.8 },
@@ -128,13 +137,6 @@ const AppContent: React.FC = () => {
       setCurrentStage(stages[currentIndex + 1]);
       console.log('New stage:', stages[currentIndex + 1]);
     }
-  };
-
-  const restartCountdown = () => {
-    console.log('Restarting countdown');
-    stopAllAudio(); // Stop all audio when restarting
-    setCurrentStage('countdown');
-    setKey(prev => prev + 1); // Force re-render with new countdown time
   };
 
   const restartExperience = () => {
