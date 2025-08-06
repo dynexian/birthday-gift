@@ -339,17 +339,17 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
       
       {/* Instructions */}
       <motion.div
-        className="absolute top-6 sm:top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-4 max-w-lg"
+        className="absolute top-4 sm:top-6 md:top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-2 sm:px-4 max-w-xs sm:max-w-sm md:max-w-lg"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-purple-800 mb-2 sm:mb-3 drop-shadow-lg leading-tight">
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold text-purple-800 mb-1 sm:mb-2 md:mb-3 drop-shadow-lg leading-tight">
           Pop the Balloons! 🎈
         </h2>
-        <p className="text-sm sm:text-base md:text-lg text-purple-600 drop-shadow-md">
-          Click the balloons as they float by! ({poppedBalloons.size}/{targetPopCount})
+        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-purple-600 drop-shadow-md font-medium">
+          Click balloons as they float! ({poppedBalloons.size}/{targetPopCount})
         </p>
       </motion.div>
       

@@ -25,6 +25,10 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [activeSection, setActiveSection] = useState<string>('childhood');
 
+  // Debug: Log the PUBLIC_URL to see what it resolves to
+  console.log('DEBUG: process.env.PUBLIC_URL =', process.env.PUBLIC_URL);
+  console.log('DEBUG: Full image path =', `${process.env.PUBLIC_URL}/images/childhood/childhood1.jpeg`);
+
   // Organized memory sections
   const memorySections: MemorySection[] = [
     {
@@ -34,7 +38,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
       emoji: '👶',
       gradient: 'from-yellow-200 via-orange-200 to-red-200',
       photos: [
-        { id: 1, src: '/images/childhood/childhood1.jpeg', caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
+        { id: 1, src: `${process.env.PUBLIC_URL}/images/childhood/childhood1.jpeg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
         { id: 2, src: '/images/childhood2.jpg', caption: 'Playing in the sand 🏖️', alt: 'Beach play' },
         { id: 3, src: '/images/childhood3.jpg', caption: 'Birthday cake mess 🎂', alt: 'Birthday celebration' },
         { id: 4, src: '/images/childhood4.jpg', caption: 'Nap time cuteness 😴', alt: 'Sleeping peacefully' },
@@ -201,8 +205,10 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                                 src={photo.src}
                                 alt={photo.alt}
                                 className="w-full h-64 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                                onLoad={() => console.log('Gallery image loaded successfully:', photo.src)}
                                 onError={(e) => {
-                                  console.error('Image failed to load:', photo.src);
+                                  console.error('Gallery image failed to load:', photo.src);
+                                  console.error('Full error:', e);
                                   e.currentTarget.style.display = 'none';
                                   const fallback = e.currentTarget.nextElementSibling as HTMLElement;
                                   if (fallback) {
@@ -343,6 +349,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                         src={selectedPhoto.src}
                         alt={selectedPhoto.alt}
                         className="w-full max-h-96 object-contain rounded-2xl shadow-lg"
+                        onLoad={() => console.log('Modal image loaded successfully:', selectedPhoto.src)}
                         onError={(e) => {
                           console.error('Modal image failed to load:', selectedPhoto.src);
                           e.currentTarget.style.display = 'none';
