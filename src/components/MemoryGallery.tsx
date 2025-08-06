@@ -34,7 +34,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
       emoji: '👶',
       gradient: 'from-yellow-200 via-orange-200 to-red-200',
       photos: [
-        { id: 1, src: '/images/childhood1.jpg', caption: 'First steps! 👶👣', alt: 'First steps' },
+        { id: 1, src: '/images/childhood/childhood1.jpeg', caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
         { id: 2, src: '/images/childhood2.jpg', caption: 'Playing in the sand 🏖️', alt: 'Beach play' },
         { id: 3, src: '/images/childhood3.jpg', caption: 'Birthday cake mess 🎂', alt: 'Birthday celebration' },
         { id: 4, src: '/images/childhood4.jpg', caption: 'Nap time cuteness 😴', alt: 'Sleeping peacefully' },
@@ -193,22 +193,53 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                       onClick={() => setSelectedPhoto(photo)}
                     >
                       <div className="relative rounded-2xl overflow-hidden shadow-lg bg-white p-4 hover:shadow-2xl transition-shadow duration-300">
-                        {/* Placeholder for image - replace with actual image */}
-                        <div
-                          className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
-                          style={{ aspectRatio: `${Math.random() * 0.5 + 0.8}` }}
-                        >
-                          <motion.span 
-                            className="text-4xl z-10"
-                            whileHover={{ scale: 1.2, rotate: 5 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                          >
-                            📸
-                          </motion.span>
+                        {/* Actual Image or Placeholder */}
+                        <div className="relative rounded-xl overflow-hidden">
+                          {photo.src.includes('childhood1.jpeg') ? (
+                            <>
+                              <img
+                                src={photo.src}
+                                alt={photo.alt}
+                                className="w-full h-64 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                                onError={(e) => {
+                                  console.error('Image failed to load:', photo.src);
+                                  e.currentTarget.style.display = 'none';
+                                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                  if (fallback) {
+                                    fallback.style.display = 'flex';
+                                  }
+                                }}
+                              />
+                              <div
+                                className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
+                                style={{ display: 'none' }}
+                              >
+                                <motion.span 
+                                  className="text-4xl z-10"
+                                  whileHover={{ scale: 1.2, rotate: 5 }}
+                                  transition={{ type: "spring", stiffness: 300 }}
+                                >
+                                  📸
+                                </motion.span>
+                              </div>
+                            </>
+                          ) : (
+                            <div
+                              className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
+                            >
+                              <motion.span 
+                                className="text-4xl z-10"
+                                whileHover={{ scale: 1.2, rotate: 5 }}
+                                transition={{ type: "spring", stiffness: 300 }}
+                              >
+                                📸
+                              </motion.span>
+                            </div>
+                          )}
                           
-                          {/* Floating sparkles */}
+                          {/* Floating sparkles overlay */}
                           <motion.div
-                            className="absolute top-2 right-2 text-yellow-400"
+                            className="absolute top-2 right-2 text-yellow-400 z-20"
                             animate={{ 
                               scale: [1, 1.2, 1],
                               rotate: [0, 180, 360] 
@@ -223,7 +254,7 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                           </motion.div>
                           
                           <motion.div
-                            className="absolute bottom-2 left-2 text-pink-400"
+                            className="absolute bottom-2 left-2 text-pink-400 z-20"
                             animate={{ 
                               scale: [1, 1.3, 1],
                               y: [0, -5, 0] 
@@ -300,37 +331,57 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                     <span className="text-xl font-bold">×</span>
                   </motion.button>
                   
-                  {/* Enhanced image placeholder */}
+                  {/* Enhanced image display */}
                   <motion.div 
-                    className="w-full h-96 bg-gradient-to-br from-purple-300 via-pink-300 to-indigo-300 rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden"
+                    className="w-full mb-6 relative overflow-hidden rounded-2xl"
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <motion.span 
-                      className="text-8xl z-10"
-                      animate={{ rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                    {selectedPhoto.src.includes('childhood1.jpeg') ? (
+                      <img
+                        src={selectedPhoto.src}
+                        alt={selectedPhoto.alt}
+                        className="w-full max-h-96 object-contain rounded-2xl shadow-lg"
+                        onError={(e) => {
+                          console.error('Modal image failed to load:', selectedPhoto.src);
+                          e.currentTarget.style.display = 'none';
+                          const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (fallback) {
+                            fallback.style.display = 'flex';
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className="w-full h-96 bg-gradient-to-br from-purple-300 via-pink-300 to-indigo-300 rounded-2xl flex items-center justify-center relative overflow-hidden"
+                      style={{ display: selectedPhoto.src.includes('childhood1.jpeg') ? 'none' : 'flex' }}
                     >
-                      📸
-                    </motion.span>
-                    
-                    {/* Animated background elements */}
-                    <motion.div
-                      className="absolute top-4 left-4 w-6 h-6 bg-white/30 rounded-full"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.7, 0.3] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    />
-                    <motion.div
-                      className="absolute top-8 right-8 w-4 h-4 bg-yellow-300/50 rounded-full"
-                      animate={{ scale: [1, 1.5, 1], y: [0, -10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                    />
-                    <motion.div
-                      className="absolute bottom-6 left-12 w-5 h-5 bg-pink-300/40 rounded-full"
-                      animate={{ scale: [1, 1.3, 1], x: [0, 10, 0] }}
-                      transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
-                    />
+                      <motion.span 
+                        className="text-8xl z-10"
+                        animate={{ rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        📸
+                      </motion.span>
+                      
+                      {/* Animated background elements */}
+                      <motion.div
+                        className="absolute top-4 left-4 w-6 h-6 bg-white/30 rounded-full"
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      />
+                      <motion.div
+                        className="absolute top-8 right-8 w-4 h-4 bg-yellow-300/50 rounded-full"
+                        animate={{ scale: [1, 1.5, 1], y: [0, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                      />
+                      <motion.div
+                        className="absolute bottom-6 left-12 w-5 h-5 bg-pink-300/40 rounded-full"
+                        animate={{ scale: [1, 1.3, 1], x: [0, 10, 0] }}
+                        transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
+                      />
+                    </div>
                   </motion.div>
                   
                   {/* Enhanced caption */}

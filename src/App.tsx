@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeProvider } from './context/ThemeContext';
 import Countdown from './components/Countdown';
 import EntryAnimation from './components/EntryAnimation';
 import MessageScroll from './components/MessageScroll';
@@ -316,7 +317,11 @@ const AppContent: React.FC = () => {
 
 // Main App component
 const App: React.FC = () => {
-  return <AppContent />;
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
 };
 
 export default App;

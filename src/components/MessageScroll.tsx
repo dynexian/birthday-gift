@@ -265,11 +265,12 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       </div>
 
       {/* Unified Control Panel - Progress Bar and Controls */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30 px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
+          animate={{ opacity: isComplete ? 0 : 1, y: isComplete ? 20 : 0 }}
           transition={{ delay: 1, duration: 0.8 }}
+          style={{ pointerEvents: isComplete ? 'none' : 'auto' }}
         >
           <motion.div
             className={`backdrop-blur-md rounded-2xl p-6 shadow-2xl border transition-all duration-500 ${
@@ -382,7 +383,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       {/* Completion Section */}
       {isComplete && (
         <motion.div
-          className={`fixed inset-0 backdrop-blur-md flex flex-col items-center justify-center text-center space-y-12 z-40 px-6 transition-all duration-500 ${
+          className={`fixed inset-0 backdrop-blur-md flex flex-col items-center justify-center text-center space-y-12 z-50 px-6 transition-all duration-500 ${
             'bg-gradient-to-br from-white/95 via-purple-50/95 to-pink-50/95'
           }`}
           initial={{ opacity: 0, scale: 0.9 }}
@@ -464,7 +465,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
               playSound('button-click', { volume: 0.7 });
               onComplete();
             }}
-            className={`relative px-12 py-6 text-xl md:text-2xl font-bold rounded-full shadow-2xl cursor-pointer overflow-hidden group z-10 transition-all duration-300 ${
+            className={`relative px-12 py-6 text-xl md:text-2xl font-bold rounded-full shadow-2xl cursor-pointer overflow-hidden group z-50 transition-all duration-300 ${
               'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-2 border-white/30'
             }`}
             initial={{ y: 30, opacity: 0, scale: 0.9 }}
@@ -472,6 +473,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
             transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 200 }}
             whileHover={{ scale: 1.08, y: -3 }}
             whileTap={{ scale: 0.95 }}
+            style={{ position: 'relative', zIndex: 60 }}
           >
             {/* Button Glow Effect */}
             <div className={`absolute inset-0 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition-opacity duration-300 ${
