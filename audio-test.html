@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Test</title>
+</head>
+<body>
+    <h1>Audio Test Page</h1>
+    
+    <h2>Direct Audio Element</h2>
+    <audio controls>
+        <source src="./audio/sounds/button-click.mp3" type="audio/mpeg">
+        <source src="/birthday-gift/audio/sounds/button-click.mp3" type="audio/mpeg">
+        <source src="http://localhost:3000/audio/sounds/button-click.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <h2>JavaScript Audio Tests</h2>
+    <button onclick="testBasicAudio()">Test Basic Audio</button>
+    <button onclick="testPreloadedAudio()">Test Preloaded Audio</button>
+    
+    <div id="log"></div>
+    
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += '<p>' + message + '</p>';
+            console.log(message);
+        }
+        
+        function testBasicAudio() {
+            log('Testing basic audio...');
+            
+            // Try multiple path variations
+            const paths = [
+                './audio/sounds/button-click.mp3',
+                '/birthday-gift/audio/sounds/button-click.mp3', 
+                'http://localhost:3000/audio/sounds/button-click.mp3',
+                '/audio/sounds/button-click.mp3'
+            ];
+            
+            async function tryPath(path, index) {
+                log(`Trying path ${index + 1}: ${path}`);
+                const audio = new Audio(path);
+                audio.volume = 0.7;
+                
+                return new Promise((resolve) => {
+                    audio.addEventListener('loadstart', () => log(`${path}: loadstart event`));
+                    audio.addEventListener('canplay', () => log(`${path}: canplay event`));
+                    audio.addEventListener('canplaythrough', () => log(`${path}: canplaythrough event`));
+                    audio.addEventListener('error', (e) => {
+                        log(`${path}: error - ${e.message || 'unknown error'}`);
+                        resolve(false);
+                    });
+                    
+                    audio.play().then(() => {
+                        log(`✅ ${path}: Audio play successful!`);
+                        resolve(true);
+                    }).catch((error) => {
+                        log(`❌ ${path}: Audio play failed - ${error.message}`);
+                        resolve(false);
+                    });
+                });
+            }
+            
+            // Try each path until one works
+            (async () => {
+                for (let i = 0; i < paths.length; i++) {
+                    const success = await tryPath(paths[i], i);
+                    if (success) {
+                        log(`✅ Found working path: ${paths[i]}`);
+                        break;
+                    }
+                }
+            })();
+        }
+        
+        function testPreloadedAudio() {
+            log('Testing preloaded audio...');
+            log('window.preloadedAudio exists: ' + !!window.preloadedAudio);
+            
+            if (window.preloadedAudio) {
+                log('Keys: ' + Object.keys(window.preloadedAudio).join(', '));
+                
+                if (window.preloadedAudio['button-click']) {
+                    const audio = window.preloadedAudio['button-click'];
+                    const clone = audio.cloneNode();
+                    clone.volume = 0.7;
+                    
+                    clone.play().then(() => {
+                        log('✅ Preloaded audio play successful!');
+                    }).catch((error) => {
+                        log('❌ Preloaded audio play failed: ' + error.message);
+                    });
+                } else {
+                    log('❌ button-click not found in preloaded audio');
+                }
+            } else {
+                log('❌ No preloaded audio found');
+            }
+        }
+    </script>
+</body>
+</html>
