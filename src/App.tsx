@@ -212,18 +212,6 @@ const AppContent: React.FC = () => {
             exit="exit"
             transition={{ duration: 1, ease: 'easeInOut' }}
           >
-            {/* Temporary Debug Button */}
-            <div className="fixed top-4 right-4 z-50">
-              <button 
-                onClick={() => {
-                  console.log('🧪 DEBUG: Direct navigation test button clicked');
-                  goToNextStage();
-                }}
-                className="bg-red-500 text-white px-4 py-2 rounded text-sm"
-              >
-                DEBUG: Skip to Next Stage
-              </button>
-            </div>
             <MessageScroll onComplete={goToNextStage} />
           </motion.div>
         )}
