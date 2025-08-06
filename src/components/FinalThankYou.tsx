@@ -9,13 +9,10 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
   
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
-      style={{
-        background: 'linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 35%, #eef2ff 70%, #e0e7ff 100%)'
-      }}
     >
       {/* Animated gradient overlay */}
       <motion.div
@@ -92,13 +89,13 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
         >
           <motion.h1
             className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-8 sm:mb-10 pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-6 sm:pb-8 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 leading-tight ${
-              'text-slate-800'
+              'text-white'
             }`}
             animate={{
               textShadow: [
-                    "0 0 10px rgba(71, 85, 105, 0.5)",
-                    "0 0 20px rgba(71, 85, 105, 0.8)",
-                    "0 0 10px rgba(71, 85, 105, 0.5)",
+                    "0 0 10px rgba(255, 255, 255, 0.5)",
+                    "0 0 20px rgba(255, 255, 255, 0.8)",
+                    "0 0 10px rgba(255, 255, 255, 0.5)",
                   ],
             }}
             transition={{
@@ -119,7 +116,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
         >
           <motion.p
             className={`text-2xl md:text-4xl leading-relaxed ${
-              'text-pink-700'
+              'text-white'
             }`}
             whileHover={{ scale: 1.05 }}
           >
@@ -128,7 +125,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
           
           <motion.p
             className={`text-xl md:text-3xl leading-relaxed ${
-              'text-purple-700'
+              'text-white opacity-90'
             }`}
             whileHover={{ scale: 1.05 }}
           >
@@ -144,7 +141,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
         >
           <motion.p
             className={`text-3xl md:text-5xl font-bold text-transparent bg-clip-text ${
-              'bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600'
+              'bg-gradient-to-r from-white via-pink-200 to-purple-200'
             }`}
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -194,7 +191,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
           </motion.button>
 
           <motion.p
-            className="text-sm text-purple-300 opacity-70"
+            className="text-sm text-white opacity-70"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
             transition={{ duration: 1, delay: 3 }}

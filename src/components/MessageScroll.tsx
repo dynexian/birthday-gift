@@ -9,6 +9,7 @@ interface MessageScrollProps {
 const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
   const [currentMessage, setCurrentMessage] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const { playSound } = useAudioManager();
 
   const messages = [
@@ -25,8 +26,10 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
     "Happy Birthday! 🎉🎂✨"
   ];
 
-  // Auto-advance messages every 4 seconds (increased for better readability)
+  // Auto-advance messages every 3 seconds with pause control
   useEffect(() => {
+    if (isPaused) return;
+    
     const timer = setInterval(() => {
       setCurrentMessage(prev => {
         if (prev >= messages.length - 1) {
@@ -37,10 +40,32 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         playSound('page-transition', { volume: 0.2 });
         return prev + 1;
       });
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(timer);
-  }, [messages.length, playSound]);
+  }, [messages.length, playSound, isPaused]);
+
+  // Manual navigation functions
+  const goToNext = () => {
+    if (currentMessage < messages.length - 1) {
+      setCurrentMessage(prev => prev + 1);
+      playSound('button-click', { volume: 0.3 });
+    } else {
+      setIsComplete(true);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentMessage > 0) {
+      setCurrentMessage(prev => prev - 1);
+      playSound('button-click', { volume: 0.3 });
+    }
+  };
+
+  const togglePause = () => {
+    setIsPaused(prev => !prev);
+    playSound('button-click', { volume: 0.3 });
+  };
 
   // Remove auto-complete - let user click the button to proceed
 
@@ -122,12 +147,10 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           style={{
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
           }}>
-            Reading your birthday messages ✨
+            Reading your birthday messages ✨ {isPaused && '(Paused)'}
           </p>
         </motion.div>
       </motion.div>
-
-
 
       {/* Main Content Area */}
       <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10">
@@ -241,6 +264,121 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         </div>
       </div>
 
+      {/* Unified Control Panel - Progress Bar and Controls */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+        >
+          <motion.div
+            className={`backdrop-blur-md rounded-2xl p-6 shadow-2xl border transition-all duration-500 ${
+              'bg-white/95 border-white/70'
+            }`}
+            animate={{ scale: [1, 1.01, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            <div className="flex flex-col items-center justify-center space-y-6">
+              {/* Progress Bar */}
+              <div className="w-full max-w-md">
+                <div className={`w-full h-3 rounded-full overflow-hidden transition-colors duration-500 ${
+                  'bg-slate-200'
+                }`}>
+                  <motion.div 
+                    className={`h-full rounded-full shadow-inner transition-all duration-500 ${
+                      'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600'
+                    }`}
+                    style={{ width: `${((currentMessage + 1) / messages.length) * 100}%` }}
+                    animate={{
+                      boxShadow: [
+                            "inset 0 2px 4px rgba(139, 92, 246, 0.5)",
+                            "inset 0 4px 8px rgba(139, 92, 246, 0.7)",
+                            "inset 0 2px 4px rgba(139, 92, 246, 0.5)"
+                          ]
+                    }}
+                    transition={{ 
+                      width: { duration: 0.8, ease: "easeOut" },
+                      boxShadow: { duration: 2, repeat: Infinity }
+                    }}
+                  />
+                </div>
+                
+                {/* Message Counter */}
+                <div className="mt-3 text-center">
+                  <span className="text-sm text-purple-600 font-medium">
+                    {currentMessage + 1} of {messages.length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Control Buttons */}
+              <div className="flex items-center justify-center space-x-4">
+                {/* Previous Button */}
+                <motion.button
+                  onClick={goToPrevious}
+                  disabled={currentMessage === 0}
+                  className={`p-3 rounded-full transition-all duration-300 ${
+                    currentMessage === 0 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
+                  }`}
+                  whileHover={currentMessage > 0 ? { scale: 1.1 } : {}}
+                  whileTap={currentMessage > 0 ? { scale: 0.95 } : {}}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </motion.button>
+
+                {/* Pause/Play Button */}
+                <motion.button
+                  onClick={togglePause}
+                  className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/20"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {isPaused ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+                    </svg>
+                  )}
+                </motion.button>
+
+                {/* Next Button */}
+                <motion.button
+                  onClick={goToNext}
+                  disabled={currentMessage === messages.length - 1}
+                  className={`p-3 rounded-full transition-all duration-300 ${
+                    currentMessage === messages.length - 1 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
+                  }`}
+                  whileHover={currentMessage < messages.length - 1 ? { scale: 1.1 } : {}}
+                  whileTap={currentMessage < messages.length - 1 ? { scale: 0.95 } : {}}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </motion.button>
+              </div>
+
+              {/* Status Text */}
+              <div className="text-center">
+                <span className={`text-xs font-medium transition-colors duration-300 ${
+                  isPaused ? 'text-orange-600' : 'text-purple-600'
+                }`}>
+                  {isPaused ? '⏸️ Paused' : '▶️ Auto-playing'}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
       {/* Completion Section */}
       {isComplete && (
         <motion.div
@@ -321,7 +459,8 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           </motion.p>
           
           <motion.button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               playSound('button-click', { volume: 0.7 });
               onComplete();
             }}
@@ -350,48 +489,6 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           </motion.button>
         </motion.div>
       )}
-
-      {/* Progress Indicator */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <motion.div
-            className={`backdrop-blur-sm rounded-full p-6 shadow-xl border transition-all duration-500 ${
-              'bg-white/90 border-white/70'
-            }`}
-            animate={{ scale: [1, 1.02, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            <div className="flex flex-col items-center justify-center space-y-3">
-              <div className={`w-64 md:w-80 h-4 rounded-full overflow-hidden transition-colors duration-500 ${
-                'bg-slate-200'
-              }`}>
-                <motion.div 
-                  className={`h-full rounded-full shadow-inner transition-all duration-500 ${
-                    'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600'
-                  }`}
-                  style={{ width: `${((currentMessage + 1) / messages.length) * 100}%` }}
-                  animate={{
-                    boxShadow: [
-                          "inset 0 2px 4px rgba(139, 92, 246, 0.5)",
-                          "inset 0 4px 8px rgba(139, 92, 246, 0.7)",
-                          "inset 0 2px 4px rgba(139, 92, 246, 0.5)"
-                        ]
-                  }}
-                  transition={{ 
-                    width: { duration: 0.8, ease: "easeOut" },
-                    boxShadow: { duration: 2, repeat: Infinity }
-                  }}
-                />
-              </div>
-              
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
     </div>
   );
 };

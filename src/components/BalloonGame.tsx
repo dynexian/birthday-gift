@@ -339,23 +339,23 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
       
       {/* Instructions */}
       <motion.div
-        className="absolute top-8 sm:top-10 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-4 max-w-lg"
+        className="absolute top-6 sm:top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-4 max-w-lg"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-purple-800 mb-3 sm:mb-4 drop-shadow-lg leading-tight">
+        <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-purple-800 mb-2 sm:mb-3 drop-shadow-lg leading-tight">
           Pop the Balloons! 🎈
         </h2>
-        <p className="text-base sm:text-lg text-purple-600 drop-shadow-md">
+        <p className="text-sm sm:text-base md:text-lg text-purple-600 drop-shadow-md">
           Click the balloons as they float by! ({poppedBalloons.size}/{targetPopCount})
         </p>
       </motion.div>
       
       {/* Progress bar */}
       <motion.div
-        className="absolute top-28 sm:top-32 left-1/2 transform -translate-x-1/2 w-48 sm:w-56 md:w-64 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
+        className="absolute top-24 sm:top-28 md:top-32 left-1/2 transform -translate-x-1/2 w-48 sm:w-56 md:w-64 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
         style={{ zIndex: 30 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

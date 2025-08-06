@@ -128,14 +128,19 @@ const AppContent: React.FC = () => {
 
   // Stage navigation functions
   const goToNextStage = () => {
-    console.log('Going to next stage from:', currentStage);
+    console.log('🚀 goToNextStage called! Current stage:', currentStage);
     const stages: Stage[] = ['preloader', 'countdown', 'entry', 'message', 'wordcloud', 'balloons', 'cake', 'gallery', 'thankyou'];
     const currentIndex = stages.indexOf(currentStage);
+    console.log('📍 Current index:', currentIndex, 'Total stages:', stages.length);
     if (currentIndex < stages.length - 1) {
+      const nextStage = stages[currentIndex + 1];
+      console.log('➡️ Moving from', currentStage, 'to', nextStage);
       // Add page transition sound effect
       playSound('page-transition', { volume: 0.3 });
-      setCurrentStage(stages[currentIndex + 1]);
-      console.log('New stage:', stages[currentIndex + 1]);
+      setCurrentStage(nextStage);
+      console.log('✅ Stage updated to:', nextStage);
+    } else {
+      console.log('⚠️ Already at last stage, cannot go further');
     }
   };
 
@@ -206,6 +211,18 @@ const AppContent: React.FC = () => {
             exit="exit"
             transition={{ duration: 1, ease: 'easeInOut' }}
           >
+            {/* Temporary Debug Button */}
+            <div className="fixed top-4 right-4 z-50">
+              <button 
+                onClick={() => {
+                  console.log('🧪 DEBUG: Direct navigation test button clicked');
+                  goToNextStage();
+                }}
+                className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+              >
+                DEBUG: Skip to Next Stage
+              </button>
+            </div>
             <MessageScroll onComplete={goToNextStage} />
           </motion.div>
         )}
@@ -281,49 +298,7 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Easter Egg: Click anywhere to create sparkles */}
-      <motion.div
-        className="fixed inset-0 z-10"
-        style={{ pointerEvents: 'none' }}
-        onMouseDown={(e) => {
-          // Don't create sparkles if clicking on interactive elements
-          const target = e.target as HTMLElement;
-          if (target.tagName === 'BUTTON' || target.closest('button')) {
-            return;
-          }
-          
-          // Create sparkle effect at click position
-          const sparkle = document.createElement('div');
-          sparkle.className = 'fixed w-3 h-3 bg-yellow-400 rounded-full animate-ping pointer-events-none z-50';
-          sparkle.style.left = `${e.clientX - 6}px`;
-          sparkle.style.top = `${e.clientY - 6}px`;
-          sparkle.style.boxShadow = '0 0 10px rgba(255, 255, 0, 0.8)';
-          document.body.appendChild(sparkle);
-          
-          // Create multiple smaller sparkles
-          for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-              const miniSparkle = document.createElement('div');
-              miniSparkle.className = 'fixed w-1 h-1 bg-white rounded-full animate-ping pointer-events-none z-50';
-              miniSparkle.style.left = `${e.clientX + (Math.random() - 0.5) * 20}px`;
-              miniSparkle.style.top = `${e.clientY + (Math.random() - 0.5) * 20}px`;
-              document.body.appendChild(miniSparkle);
-              
-              setTimeout(() => {
-                if (document.body.contains(miniSparkle)) {
-                  document.body.removeChild(miniSparkle);
-                }
-              }, 800);
-            }, i * 100);
-          }
-          
-          setTimeout(() => {
-            if (document.body.contains(sparkle)) {
-              document.body.removeChild(sparkle);
-            }
-          }, 1200);
-        }}
-      />
+      {/* Easter Egg: Click anywhere to create sparkles - TEMPORARILY DISABLED */}
       
       {/* Global click handler for sparkles - DISABLED to prevent button interference */}
       <div
