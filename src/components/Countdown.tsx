@@ -16,7 +16,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
   // Play tick sound on second change (only when < 10 seconds)
   useEffect(() => {
     if (seconds !== lastSecondRef.current && seconds <= 10 && seconds > 0) {
-      playSound('countdown-tick', { volume: 0.4 });
+      playSound('countdown-tick', { volume: 0.1 });
     }
     lastSecondRef.current = seconds;
   }, [seconds, playSound]);
@@ -98,7 +98,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
           className="text-center relative z-10 max-w-4xl mx-auto"
         >
           <motion.h2 
-            className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-6 md:mb-8 bg-gradient-to-r ${
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r ${
               'from-purple-500 via-pink-500 to-indigo-500'
             } bg-clip-text text-transparent leading-tight`}
             animate={{ 
@@ -260,10 +260,10 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
                   animate="center"
                   exit="exit"
                   transition={{ 
-                    duration: 0.6, 
+                    duration: 0.2, 
                     ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuart
-                    filter: { duration: 0.4 },
-                    rotateX: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+                    filter: { duration: 0.15 },
+                    rotateX: { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
                   }}
                   className={`countdown-digit absolute font-bold text-3xl md:text-4xl lg:text-5xl ${
                     'text-purple-600'

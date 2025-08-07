@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 
 interface AudioPreloaderProps {
   onComplete: () => void;
+  onAudioActivated?: () => void;
 }
 
 interface AudioFile {
@@ -11,12 +12,14 @@ interface AudioFile {
   type: 'music' | 'sound';
 }
 
-const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
+const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete, onAudioActivated }) => {
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [currentlyLoading, setCurrentlyLoading] = useState<string>('');
   const [isComplete, setIsComplete] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [audioActivated, setAudioActivated] = useState(false);
+  const [showActivation, setShowActivation] = useState(true);
   const hasStartedRef = useRef(false);
 
   const audioFiles: AudioFile[] = useMemo(() => [
@@ -38,6 +41,69 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
     { key: 'countdown-complete', path: `${process.env.PUBLIC_URL}/audio/sounds/countdown-complete.mp3`, type: 'sound' },
     { key: 'page-transition', path: `${process.env.PUBLIC_URL}/audio/sounds/page-transition.mp3`, type: 'sound' },
   ], []);
+
+  const handleAudioActivation = async () => {
+    console.log('🎵 AudioPreloader: Audio activation clicked');
+    
+    try {
+      // Test 1: Check AudioContext state and resume if needed
+      if (window.AudioContext || (window as any).webkitAudioContext) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const audioContext = new AudioContextClass();
+        console.log('🔊 AudioContext state:', audioContext.state);
+        
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+          console.log('✅ AudioContext resumed');
+        }
+      }
+      
+      // Test 2: Basic audio context activation with user gesture
+      const testAudio = new Audio();
+      testAudio.volume = 0.01; // Very quiet test
+      testAudio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Djr2geBT2N0+/Yfi4FLnHA6tyWTQsQUr7l5Z1SFApEo9vmr2UbBzyQ1+7Sghwe';
+      
+      await testAudio.play();
+      console.log('✅ Basic audio play successful');
+      testAudio.pause();
+      testAudio.currentTime = 0;
+      
+      // Test 3: Try to play actual audio file directly (very brief test)
+      const directAudio = new Audio(`${process.env.PUBLIC_URL}/audio/sounds/button-click.mp3`);
+      directAudio.volume = 0.05; // Very quiet
+      const playPromise = directAudio.play();
+      
+      if (playPromise !== undefined) {
+        await playPromise;
+        console.log('✅ Direct audio file play successful');
+        // Stop the test audio immediately after a brief play
+        setTimeout(() => {
+          directAudio.pause();
+          directAudio.currentTime = 0;
+        }, 100);
+      }
+      
+    } catch (error) {
+      console.error('❌ Audio activation error:', error);
+    }
+    
+    // Ensure no background audio is playing from tests
+    console.log('🔇 Stopping any test audio before activation');
+    
+    setAudioActivated(true);
+    setShowActivation(false);
+    onAudioActivated?.();
+    
+    // Start preloading after activation
+    setTimeout(() => {
+      if (!hasStartedRef.current) {
+        hasStartedRef.current = true;
+        console.log('AudioPreloader: Starting preload process after activation...');
+        setTotalCount(audioFiles.length);
+        preloadAudio();
+      }
+    }, 500);
+  };
 
   const preloadAudio = useCallback(async () => {
     console.log(`🚀 AudioPreloader: Starting to preload ${audioFiles.length} files`);
@@ -67,14 +133,8 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
           console.log(`AudioPreloader: Stored ${audioFile.key} in window.preloadedAudio`);
           console.log(`AudioPreloader: Current keys in preloadedAudio:`, Object.keys(window.preloadedAudio));
           
-          // Test if the stored audio can actually be played
-          const testClone = audio.cloneNode() as HTMLAudioElement;
-          testClone.volume = 0.01; // Very quiet test
-          testClone.play().then(() => {
-            console.log(`✅ AudioPreloader: Test play successful for ${audioFile.key}`);
-          }).catch((testError) => {
-            console.warn(`⚠️ AudioPreloader: Test play failed for ${audioFile.key}:`, testError);
-          });
+          // Audio is successfully loaded and stored, no need to test play here
+          console.log(`✅ AudioPreloader: Successfully stored ${audioFile.key} for later use`);
           
           resolve();
         };
@@ -140,6 +200,12 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
   }, [audioFiles, onComplete]);
 
   useEffect(() => {
+    // Only auto-start if audio is already activated, otherwise wait for user interaction
+    if (!audioActivated) {
+      console.log('AudioPreloader: Waiting for audio activation...');
+      return;
+    }
+    
     // Prevent multiple executions
     if (hasStartedRef.current) {
       console.log('AudioPreloader: Already started, skipping...');
@@ -150,7 +216,7 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
     console.log('AudioPreloader: Starting preload process...');
     setTotalCount(audioFiles.length);
     preloadAudio();
-  }, []); // Empty dependency array - only run once
+  }, [audioActivated, audioFiles.length, preloadAudio]); // Include audioActivated in dependencies
 
   const skipPreloader = () => {
     setIsComplete(true);
@@ -160,6 +226,79 @@ const AudioPreloader: React.FC<AudioPreloaderProps> = ({ onComplete }) => {
   };
 
   const progressPercentage = totalCount > 0 ? (loadedCount / totalCount) * 100 : 0;
+
+  // Show audio activation screen first
+  if (showActivation) {
+    return (
+      <motion.div
+        className="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+        onClick={handleAudioActivation}
+      >
+        {/* Background Stars */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(50)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                opacity: [0.3, 1, 0.3],
+                scale: [0.5, 1.2, 0.5],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 3,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white/10 backdrop-blur-xl p-10 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 border border-white/20 shadow-2xl max-w-md mx-auto hover:bg-white/15"
+        >
+          <motion.div
+            animate={{ 
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="mb-8"
+          >
+            <div className="text-7xl mb-2">🎵</div>
+          </motion.div>
+          
+          <h2 className="text-3xl font-bold text-white mb-6 leading-tight">Enable Audio</h2>
+          <p className="text-purple-100 mb-8 text-lg leading-relaxed">
+            Click to activate sound effects and background music for the full birthday experience!
+          </p>
+          
+          <motion.div
+            animate={{ 
+              boxShadow: [
+                '0 4px 20px rgba(147, 51, 234, 0.4)',
+                '0 8px 30px rgba(147, 51, 234, 0.6)',
+                '0 4px 20px rgba(147, 51, 234, 0.4)'
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="px-8 py-4 rounded-xl text-white font-semibold text-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 transition-all duration-300"
+          >
+            Enable Audio 🎶
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

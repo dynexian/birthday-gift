@@ -155,7 +155,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
               backgroundSize: "200% 200%",
             }}
           >
-            — from me ✨
+            — from Shubham ✨
           </motion.p>
         </motion.div>
 

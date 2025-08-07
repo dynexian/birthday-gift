@@ -20,33 +20,37 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
   const { playSound } = useAudioManager();
 
   const words: Word[] = [
-    // Personality Traits
-    { text: "Kind", color: "#ff6b6b", size: "lg", category: "trait" },
-    { text: "Creative", color: "#4ecdc4", size: "xl", category: "trait" },
-    { text: "Wise", color: "#45b7d1", size: "md", category: "trait" },
-    { text: "Gentle", color: "#ffa726", size: "md", category: "trait" },
-    { text: "Loyal", color: "#ab47bc", size: "lg", category: "trait" },
-    
-    // Emotions & Feelings
-    { text: "Joyful", color: "#66bb6a", size: "xl", category: "emotion" },
-    { text: "Peaceful", color: "#42a5f5", size: "lg", category: "emotion" },
-    { text: "Radiant", color: "#ef5350", size: "md", category: "emotion" },
-    { text: "Cheerful", color: "#ffca28", size: "lg", category: "emotion" },
-    { text: "Warm", color: "#ff7043", size: "md", category: "emotion" },
-    
-    // Strengths & Qualities
-    { text: "Strong", color: "#26a69a", size: "xl", category: "strength" },
-    { text: "Brave", color: "#5c6bc0", size: "lg", category: "strength" },
-    { text: "Amazing", color: "#ec407a", size: "xl", category: "strength" },
-    { text: "Magical", color: "#9c27b0", size: "lg", category: "strength" },
-    { text: "Beautiful", color: "#f06292", size: "lg", category: "strength" },
-  ];
+  // Personality Traits
+  { text: "Kind", color: "#ff6b6b", size: "lg", category: "trait" },
+  { text: "Honest", color: "#4ecdc4", size: "md", category: "trait" },
+  { text: "Calm", color: "#42a5f5", size: "md", category: "trait" },
+  { text: "Thoughtful", color: "#ff7043", size: "lg", category: "trait" },
+  { text: "Disciplined", color: "#ab47bc", size: "lg", category: "trait" },
+  { text: "Soft-spoken", color: "#ba68c8", size: "md", category: "trait" },
+  { text: "Grounded", color: "#26c6da", size: "md", category: "trait" },
+  { text: "Loyal", color: "#26a69a", size: "lg", category: "trait" },
+  { text: "Observant", color: "#29b6f6", size: "md", category: "trait" },
+  { text: "Respectful", color: "#5c6bc0", size: "md", category: "trait" },
 
-  const categories = [
-    { id: 'trait', label: 'Traits', icon: '🌟', color: 'from-blue-500 to-purple-500' },
-    { id: 'emotion', label: 'Feelings', icon: '💖', color: 'from-pink-500 to-red-500' },
-    { id: 'strength', label: 'Strengths', icon: '⚡', color: 'from-green-500 to-teal-500' },
-  ];
+  // Emotions & Feelings
+  { text: "Caring", color: "#ffca28", size: "lg", category: "emotion" },
+  { text: "Sincere", color: "#66bb6a", size: "md", category: "emotion" },
+  { text: "Gentle", color: "#ffa726", size: "md", category: "emotion" },
+  { text: "Real", color: "#ef5350", size: "md", category: "emotion" },
+  { text: "Quiet", color: "#90a4ae", size: "md", category: "emotion" },
+
+  // Strengths & Qualities
+  { text: "Reliable", color: "#ec407a", size: "lg", category: "strength" },
+  { text: "Patient", color: "#9c27b0", size: "md", category: "strength" },
+  { text: "Balanced", color: "#26a69a", size: "md", category: "strength" },
+  { text: "Emotionally strong", color: "#8d6e63", size: "lg", category: "strength" },
+];
+
+const categories = [
+  { id: 'trait', label: 'Traits', icon: '🌟', color: 'from-blue-500 to-purple-500' },
+  { id: 'emotion', label: 'Feelings', icon: '💖', color: 'from-pink-500 to-red-500' },
+  { id: 'strength', label: 'Strengths', icon: '⚡', color: 'from-green-500 to-teal-500' },
+];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -117,7 +121,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
             }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            ✨ Words That Describe You ✨
+            ✨ Some words that describe you✨
           </motion.h1>
           
           <motion.p
@@ -126,7 +130,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            Discover the beautiful qualities that make you unique
+            Discover the beautiful qualities that make you unique through my eyes. Each word is a reflection of your amazing personality, emotions, and strengths. Click on any word to interact and see how it resonates with you!
           </motion.p>
         </motion.div>
 

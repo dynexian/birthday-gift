@@ -337,37 +337,40 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
         }}
       />
       
-      {/* Instructions */}
-      <motion.div
-        className="absolute top-4 sm:top-6 md:top-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none px-2 sm:px-4 max-w-xs sm:max-w-sm md:max-w-lg"
-        style={{ zIndex: 30 }}
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold text-purple-800 mb-1 sm:mb-2 md:mb-3 drop-shadow-lg leading-tight">
-          Pop the Balloons! 🎈
-        </h2>
-        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-purple-600 drop-shadow-md font-medium">
-          Click balloons as they float! ({poppedBalloons.size}/{targetPopCount})
-        </p>
-      </motion.div>
-      
-      {/* Progress bar */}
-      <motion.div
-        className="absolute top-24 sm:top-28 md:top-32 left-1/2 transform -translate-x-1/2 w-48 sm:w-56 md:w-64 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg pointer-events-none backdrop-blur-sm"
-        style={{ zIndex: 30 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
+      {/* Instructions and Progress Bar Container */}
+      <div className="absolute top-12 sm:top-16 md:top-20 lg:top-24 left-0 right-0 flex justify-center pointer-events-none" style={{ zIndex: 30 }}>
         <motion.div
-          className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full shadow-inner"
-          initial={{ width: 0 }}
-          animate={{ width: `${(poppedBalloons.size / targetPopCount) * 100}%` }}
-          transition={{ duration: 0.5 }}
-        />
-      </motion.div>
+          className="flex flex-col items-center text-center px-4 sm:px-6 md:px-8"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+        {/* Instructions */}
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold text-purple-800 mb-2 sm:mb-3 md:mb-4 drop-shadow-lg leading-tight text-center">
+          🎈Pop the Balloons!🎈
+          </h2>
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-purple-600 drop-shadow-md font-medium text-center">
+            Click balloons as they float! ({poppedBalloons.size}/{targetPopCount})
+          </p>
+        </div>
+        
+        {/* Progress bar */}
+        <motion.div
+          className="w-48 sm:w-56 md:w-64 lg:w-72 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <motion.div
+            className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full shadow-inner"
+            initial={{ width: 0 }}
+            animate={{ width: `${(poppedBalloons.size / targetPopCount) * 100}%` }}
+            transition={{ duration: 0.5 }}
+          />
+        </motion.div>
+        </motion.div>
+      </div>
       
       {/* Balloons */}
       {balloons}

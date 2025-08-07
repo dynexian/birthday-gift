@@ -27,7 +27,7 @@ export const AudioActivator: React.FC<AudioActivatorProps> = ({ onActivate }) =>
       
       // Test 2: Basic audio context activation with user gesture
       const testAudio = new Audio();
-      testAudio.volume = 0.01; // Very quiet test
+      testAudio.volume = 0.0; // Very quiet test
       testAudio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Djr2geBT2N0+/Yfi4FLnHA6tyWTQsQUr7l5Z1SFApEo9vmr2UbBzyQ1+7Sghwe';
       
       await testAudio.play();
@@ -36,7 +36,7 @@ export const AudioActivator: React.FC<AudioActivatorProps> = ({ onActivate }) =>
       
       // Test 3: Try to play actual audio file directly
       const directAudio = new Audio(`${process.env.PUBLIC_URL}/audio/sounds/button-click.mp3`);
-      directAudio.volume = 0.7;
+      directAudio.volume = 0.0;
       const playPromise = directAudio.play();
       
       if (playPromise !== undefined) {
@@ -53,7 +53,7 @@ export const AudioActivator: React.FC<AudioActivatorProps> = ({ onActivate }) =>
       // Test 5: Try useAudioManager after a short delay
       setTimeout(() => {
         console.log('🎮 Testing playSound from useAudioManager');
-        playSound('button-click', { volume: 0.7 });
+        playSound('button-click', { volume: 0.0 });
       }, 200);
       
     } catch (error) {
@@ -62,7 +62,7 @@ export const AudioActivator: React.FC<AudioActivatorProps> = ({ onActivate }) =>
       // Fallback: Try direct audio anyway
       setTimeout(() => {
         console.log('🔄 Fallback: Trying playSound anyway');
-        playSound('button-click', { volume: 0.7 });
+        playSound('button-click', { volume: 0.0 });
       }, 100);
     }
     

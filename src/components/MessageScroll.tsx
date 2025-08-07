@@ -127,33 +127,51 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         ))}
       </div>
 
-      {/* Instructions */}
+      {/* Instructions - Full Width Top Bar */}
       <motion.div
-        className="fixed top-6 sm:top-8 left-1/2 transform -translate-x-1/2 z-20 text-center px-4 max-w-md"
-        initial={{ opacity: 0, y: -20 }}
+        className="fixed top-0 left-0 right-0 z-20 w-full flex items-center justify-center py-6 sm:py-8 md:py-10 px-4"
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         <motion.div
-          className={`backdrop-blur-sm rounded-full px-6 sm:px-8 py-3 sm:py-4 shadow-xl border transition-all duration-500 ${
-            'bg-white/90 border-white/70'
+          className={`backdrop-blur-md rounded-2xl px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 shadow-2xl border transition-all duration-500 w-full max-w-2xl ${
+            'bg-white/95 border-white/70'
           }`}
-          animate={{ scale: [1, 1.02, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          animate={{ 
+            scale: [1, 1.01, 1],
+            boxShadow: [
+              "0 10px 40px rgba(139, 92, 246, 0.15)",
+              "0 20px 60px rgba(139, 92, 246, 0.25)",
+              "0 10px 40px rgba(139, 92, 246, 0.15)"
+            ]
+          }}
+          transition={{ 
+            duration: 3, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         >
-          <p className={`text-base sm:text-lg md:text-xl font-semibold transition-colors duration-500 ${
-            'text-slate-800'
-          }`}
-          style={{
-            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-          }}>
-            Reading your birthday messages ✨ {isPaused && '(Paused)'}
-          </p>
+          <div className="text-center">
+            <p className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-colors duration-500 ${
+              'text-slate-800'
+            }`}
+            style={{
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            }}>
+              📖 Reading your birthday messages ✨ 
+              {isPaused && (
+                <span className="block text-base sm:text-lg md:text-xl font-medium text-orange-600 mt-1">
+                  (Paused)
+                </span>
+              )}
+            </p>
+          </div>
         </motion.div>
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10">
+      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10 pt-24 sm:pt-28 md:pt-32">
         <div className="text-center max-w-5xl w-full mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60, scale: 0.9 }}

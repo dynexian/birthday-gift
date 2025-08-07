@@ -12,7 +12,6 @@ import FinalThankYou from './components/FinalThankYou';
 import ParticleSystem from './components/ParticleSystem';
 import FloatingElements from './components/FloatingElements';
 import AudioPreloader from './components/AudioPreloader';
-import { AudioActivator } from './components/AudioActivator';
 
 import { useCustomCursor } from './hooks/useCustomCursor';
 import { useAudioManager } from './hooks/useAudio';
@@ -28,10 +27,10 @@ const AppContent: React.FC = () => {
 
   // Set target date for countdown (120 seconds from now for demo)
   const targetDate = new Date();
-  targetDate.setSeconds(targetDate.getSeconds() + 5); // 120 seconds from now for demo
+  targetDate.setSeconds(targetDate.getSeconds() + 10); // 120 seconds from now for demo
 
   // Set birth date for age calculation (you can customize this)
-  const birthDate = new Date('1995-08-04'); // Example: August 4, 1995 - customize this date!
+  const birthDate = new Date('2003-08-10'); // Example: August 4, 1995 - customize this date!
 
   // Background music management based on current stage
   useEffect(() => {
@@ -43,7 +42,7 @@ const AppContent: React.FC = () => {
         // Countdown stage only has timer sound effects, no background music
         break;
       case 'entry':
-        playBackgroundMusic('celebration', { volume: 0.4, loop: true });
+        playBackgroundMusic('theme-birthday', { volume: 0.4, loop: true });
         break;
       case 'message':
         playBackgroundMusic('gentle-piano', { volume: 0.25, loop: true });
@@ -171,7 +170,10 @@ const AppContent: React.FC = () => {
       <AnimatePresence mode="wait">
         {/* Stage 0: Audio Preloader */}
         {currentStage === 'preloader' && (
-          <AudioPreloader onComplete={handlePreloaderComplete} />
+          <AudioPreloader 
+            onComplete={handlePreloaderComplete} 
+            onAudioActivated={() => setIsAudioEnabled(true)}
+          />
         )}
 
         {/* Stage 1: Countdown */}
@@ -294,11 +296,6 @@ const AppContent: React.FC = () => {
         className="fixed inset-0 z-0 pointer-events-none"
         style={{ pointerEvents: 'none' }}
       ></div>
-
-      {/* Audio Activator - Show when audio hasn't been enabled */}
-      {!isAudioEnabled && currentStage !== 'preloader' && (
-        <AudioActivator onActivate={() => setIsAudioEnabled(true)} />
-      )}
     </div>
   );
 };
