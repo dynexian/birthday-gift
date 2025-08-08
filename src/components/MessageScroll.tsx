@@ -23,7 +23,17 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
     "The memories we've shared together, 📸",
     "And all the amazing moments yet to come! 🌈",
     "Today, we honor you and all that you are. 🙏",
-    "Happy Birthday! 🎉🎂✨"
+    "Happy Birthday! 🎉🎂✨",
+    "Wishing you a year filled with love, laughter, and adventure,",
+    "May your dreams take flight and your heart be light,",
+    "Here's to new beginnings and cherished memories,",
+    "To the laughter that fills your days,",
+    "To the love that surrounds you always,",
+    "And to the magic that life has in store for you,",
+    "May this year be your best one yet,",
+    "Filled with moments that make your heart sing, 🎶",
+    "Hoping that your love life becomes fruitful this upcoming year 🌹",
+    "Last one was from Swikruti...hehe",
   ];
 
   // Auto-advance messages every 3 seconds with pause control
@@ -129,21 +139,21 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
 
       {/* Instructions - Full Width Top Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 z-20 w-full flex items-center justify-center py-6 sm:py-8 md:py-10 px-4"
+        className="fixed top-0 left-0 right-0 z-20 w-full flex items-center justify-center py-4 sm:py-5 md:py-6 px-4 pt-6 sm:pt-8 md:pt-10"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         <motion.div
-          className={`backdrop-blur-md rounded-2xl px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 shadow-2xl border transition-all duration-500 w-full max-w-2xl ${
+          className={`backdrop-blur-md rounded-xl px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 md:py-5 shadow-xl border transition-all duration-500 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg ${
             'bg-white/95 border-white/70'
           }`}
           animate={{ 
             scale: [1, 1.01, 1],
             boxShadow: [
-              "0 10px 40px rgba(139, 92, 246, 0.15)",
-              "0 20px 60px rgba(139, 92, 246, 0.25)",
-              "0 10px 40px rgba(139, 92, 246, 0.15)"
+              "0 8px 30px rgba(139, 92, 246, 0.15)",
+              "0 12px 40px rgba(139, 92, 246, 0.25)",
+              "0 8px 30px rgba(139, 92, 246, 0.15)"
             ]
           }}
           transition={{ 
@@ -153,15 +163,15 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           }}
         >
           <div className="text-center">
-            <p className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-colors duration-500 ${
+            <p className={`text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold transition-colors duration-500 ${
               'text-slate-800'
             }`}
             style={{
-              textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
             }}>
               📖 Reading your birthday messages ✨ 
               {isPaused && (
-                <span className="block text-base sm:text-lg md:text-xl font-medium text-orange-600 mt-1">
+                <span className="block text-sm sm:text-base md:text-lg lg:text-xl font-medium text-orange-600 mt-1">
                   (Paused)
                 </span>
               )}
@@ -171,7 +181,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10 pt-24 sm:pt-28 md:pt-32">
+      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10 pt-20 sm:pt-22 md:pt-24 pb-24 sm:pb-28 md:pb-32">
         <div className="text-center max-w-5xl w-full mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60, scale: 0.9 }}
@@ -221,11 +231,11 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 'border-purple-300'
               }`}></div>
               
-              <div className="relative min-h-[180px] sm:min-h-[200px] md:min-h-[240px] lg:min-h-[280px] flex items-center justify-center overflow-hidden">
+              <div className="relative min-h-[130px] sm:min-h-[150px] md:min-h-[170px] lg:min-h-[190px] xl:min-h-[210px] flex items-center justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={currentMessage}
-                    className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-relaxed font-semibold break-words px-4 sm:px-6 md:px-8 lg:px-10 py-3 sm:py-4 md:py-5 lg:py-6 mb-6 sm:mb-8 md:mb-10 transition-colors duration-500 absolute w-full ${
+                    className={`text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl leading-relaxed font-medium break-words px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-3 md:py-4 transition-colors duration-500 absolute w-full ${
                       'text-slate-800 drop-shadow-md'
                     }`}
                     style={{
@@ -234,39 +244,39 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                     }}
                     initial={{ 
                       opacity: 0, 
-                      y: 80, 
-                      scale: 0.8,
-                      rotateX: 15,
-                      filter: "blur(8px) brightness(0.7)"
+                      y: 40, 
+                      scale: 0.9,
+                      rotateX: 8,
+                      filter: "blur(4px) brightness(0.8)"
                     }}
                     animate={{ 
                       opacity: 1, 
                       y: 0, 
-                      scale: [0.8, 1.02, 1],
+                      scale: [0.9, 1.01, 1],
                       rotateX: 0,
                       filter: "blur(0px) brightness(1)"
                     }}
                     exit={{ 
                       opacity: 0, 
-                      y: -80, 
-                      scale: 0.8,
-                      rotateX: -15,
-                      filter: "blur(8px) brightness(0.7)"
+                      y: -40, 
+                      scale: 0.9,
+                      rotateX: -8,
+                      filter: "blur(4px) brightness(0.8)"
                     }}
                     transition={{ 
-                      duration: 1.0,
+                      duration: 0.4,
                       ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuart
                       scale: { 
-                        duration: 1.5, 
+                        duration: 0.6, 
                         ease: [0.34, 1.56, 0.64, 1], // easeOutBack
                         times: [0, 0.6, 1]
                       },
                       filter: { 
-                        duration: 0.8,
+                        duration: 0.3,
                         ease: "easeOut"
                       },
                       rotateX: {
-                        duration: 1.0,
+                        duration: 0.4,
                         ease: [0.16, 1, 0.3, 1]
                       }
                     }}
@@ -283,7 +293,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       </div>
 
       {/* Unified Control Panel - Progress Bar and Controls */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30 px-4">
+      <div className="fixed bottom-4 sm:bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-30 px-4 w-full max-w-lg">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isComplete ? 0 : 1, y: isComplete ? 20 : 0 }}
@@ -291,16 +301,16 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           style={{ pointerEvents: isComplete ? 'none' : 'auto' }}
         >
           <motion.div
-            className={`backdrop-blur-md rounded-2xl p-6 shadow-2xl border transition-all duration-500 ${
+            className={`backdrop-blur-md rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border transition-all duration-500 ${
               'bg-white/95 border-white/70'
             }`}
             animate={{ scale: [1, 1.01, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="flex flex-col items-center justify-center space-y-4 sm:space-y-5 md:space-y-6">
               {/* Progress Bar */}
-              <div className="w-full max-w-md">
-                <div className={`w-full h-3 rounded-full overflow-hidden transition-colors duration-500 ${
+              <div className="w-full max-w-xs sm:max-w-sm md:max-w-md">
+                <div className={`w-full h-2 sm:h-3 rounded-full overflow-hidden transition-colors duration-500 ${
                   'bg-slate-200'
                 }`}>
                   <motion.div 
@@ -323,20 +333,20 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 </div>
                 
                 {/* Message Counter */}
-                <div className="mt-3 text-center">
-                  <span className="text-sm text-purple-600 font-medium">
+                <div className="mt-2 sm:mt-3 text-center">
+                  <span className="text-xs sm:text-sm text-purple-600 font-medium">
                     {currentMessage + 1} of {messages.length}
                   </span>
                 </div>
               </div>
 
               {/* Control Buttons */}
-              <div className="flex items-center justify-center space-x-4">
+              <div className="flex items-center justify-center space-x-3 sm:space-x-4">
                 {/* Previous Button */}
                 <motion.button
                   onClick={goToPrevious}
                   disabled={currentMessage === 0}
-                  className={`p-3 rounded-full transition-all duration-300 ${
+                  className={`p-2 sm:p-3 rounded-full transition-all duration-300 ${
                     currentMessage === 0 
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                       : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
@@ -344,7 +354,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                   whileHover={currentMessage > 0 ? { scale: 1.1 } : {}}
                   whileTap={currentMessage > 0 ? { scale: 0.95 } : {}}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </motion.button>
@@ -352,16 +362,16 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 {/* Pause/Play Button */}
                 <motion.button
                   onClick={togglePause}
-                  className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/20"
+                  className="p-3 sm:p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/20"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {isPaused ? (
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   ) : (
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
                     </svg>
                   )}
@@ -371,7 +381,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 <motion.button
                   onClick={goToNext}
                   disabled={currentMessage === messages.length - 1}
-                  className={`p-3 rounded-full transition-all duration-300 ${
+                  className={`p-2 sm:p-3 rounded-full transition-all duration-300 ${
                     currentMessage === messages.length - 1 
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                       : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
@@ -379,7 +389,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                   whileHover={currentMessage < messages.length - 1 ? { scale: 1.1 } : {}}
                   whileTap={currentMessage < messages.length - 1 ? { scale: 0.95 } : {}}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </motion.button>

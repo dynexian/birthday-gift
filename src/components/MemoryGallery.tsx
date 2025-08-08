@@ -25,36 +25,61 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [activeSection, setActiveSection] = useState<string>('childhood');
 
-  // Debug: Log the PUBLIC_URL to see what it resolves to
-  console.log('DEBUG: process.env.PUBLIC_URL =', process.env.PUBLIC_URL);
-  console.log('DEBUG: Full image path =', `${process.env.PUBLIC_URL}/images/childhood/childhood1.jpeg`);
-
   // Organized memory sections
   const memorySections: MemorySection[] = [
     {
       id: 'childhood',
-      title: 'Adventures of a Toddler',
-      subtitle: 'The cutest and most innocent moments',
-      emoji: '👶',
+      title: 'Some Moments from Childhood',
+      subtitle: 'The innocence and silence of childhood',
+      emoji: '👦',
       gradient: 'from-yellow-200 via-orange-200 to-red-200',
       photos: [
-        { id: 1, src: `${process.env.PUBLIC_URL}/images/childhood/childhood1.jpeg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
-        { id: 2, src: '/images/childhood2.jpg', caption: 'Playing in the sand 🏖️', alt: 'Beach play' },
-        { id: 3, src: '/images/childhood3.jpg', caption: 'Birthday cake mess 🎂', alt: 'Birthday celebration' },
-        { id: 4, src: '/images/childhood4.jpg', caption: 'Nap time cuteness 😴', alt: 'Sleeping peacefully' },
+        { id: 1, src: `${process.env.PUBLIC_URL}/images/childhood/a (1).jpg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
+        { id: 2, src: `${process.env.PUBLIC_URL}/images/childhood/a (2).jpg`, caption: 'First steps into the world! 🌍', alt: 'First steps' },
+        { id: 3, src: `${process.env.PUBLIC_URL}/images/childhood/a (3).jpg`, caption: 'Playtime adventures! 🧸', alt: 'Playtime' },
+        { id: 4, src: `${process.env.PUBLIC_URL}/images/childhood/a (4).jpg`, caption: 'Family love captured! ❤️', alt: 'Family moment' },
+        { id: 5, src: `${process.env.PUBLIC_URL}/images/childhood/a (5).jpg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
+        { id: 7, src: `${process.env.PUBLIC_URL}/images/childhood/a (7).jpg`, caption: 'Playtime adventures! 🧸', alt: 'Playtime' },
+        { id: 8, src: `${process.env.PUBLIC_URL}/images/childhood/a (8).jpg`, caption: 'Family love captured! ❤️', alt: 'Family moment' },  
+        { id: 9, src: `${process.env.PUBLIC_URL}/images/childhood/a (9).jpg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' },
+        { id: 10, src: `${process.env.PUBLIC_URL}/images/childhood/a (10).jpg`, caption: 'First steps into the world! 🌍', alt: 'First steps' },
+        { id: 11, src: `${process.env.PUBLIC_URL}/images/childhood/a (11).jpg`, caption: 'Playtime adventures! 🧸', alt: 'Playtime' },
+        { id: 12, src: `${process.env.PUBLIC_URL}/images/childhood/a (12).jpg`, caption: 'Family love captured! ❤️', alt: 'Family moment' },
+        { id: 13, src: `${process.env.PUBLIC_URL}/images/childhood/a (13).jpg`, caption: 'Sweet childhood memories! 👶✨', alt: 'Childhood memory' }
       ]
     },
     {
       id: 'school',
-      title: 'School Days Chronicles',
+      title: 'School Days',
       subtitle: 'Learning, growing, and making friends',
       emoji: '🎒',
       gradient: 'from-green-200 via-blue-200 to-purple-200',
       photos: [
-        { id: 5, src: '/images/school1.jpg', caption: 'First day of school! 📚', alt: 'School entrance' },
-        { id: 6, src: '/images/school2.jpg', caption: 'Science fair winner 🏆', alt: 'Science project' },
-        { id: 7, src: '/images/school3.jpg', caption: 'Best friends forever 👫', alt: 'School friends' },
-        { id: 8, src: '/images/school4.jpg', caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 14, src: `${process.env.PUBLIC_URL}/images/school/b (1).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 15, src: `${process.env.PUBLIC_URL}/images/school/b (2).jpg`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 16, src: `${process.env.PUBLIC_URL}/images/school/b (3).jpg`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 17, src: `${process.env.PUBLIC_URL}/images/school/b (4).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 18, src: `${process.env.PUBLIC_URL}/images/school/b (5).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 19, src: `${process.env.PUBLIC_URL}/images/school/b (6).jpg`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 20, src: `${process.env.PUBLIC_URL}/images/school/b (7).jpg`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 21, src: `${process.env.PUBLIC_URL}/images/school/b (8).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 22, src: `${process.env.PUBLIC_URL}/images/school/b (9).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 23, src: `${process.env.PUBLIC_URL}/images/school/b (10).jpg`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 24, src: `${process.env.PUBLIC_URL}/images/school/b (11).jpg`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 25, src: `${process.env.PUBLIC_URL}/images/school/b (12).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 26, src: `${process.env.PUBLIC_URL}/images/school/b (13).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 27, src: `${process.env.PUBLIC_URL}/images/school/b (14).jpg`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 28, src: `${process.env.PUBLIC_URL}/images/school/b (15).jpg`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 29, src: `${process.env.PUBLIC_URL}/images/school/b (16).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 30, src: `${process.env.PUBLIC_URL}/images/school/b (17).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 31, src: `${process.env.PUBLIC_URL}/images/school/b (18).jpg`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 32, src: `${process.env.PUBLIC_URL}/images/school/b (19).jpg`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 33, src: `${process.env.PUBLIC_URL}/images/school/b (20).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+        { id: 34, src: `${process.env.PUBLIC_URL}/images/school/b (21).jpg`, caption: 'Days of school! 📚', alt: 'School entrance' },
+        { id: 35, src: `${process.env.PUBLIC_URL}/images/school/b (22).png`, caption: 'Science fair winner 🏆', alt: 'Science project' },
+        { id: 36, src: `${process.env.PUBLIC_URL}/images/school/b (23).png`, caption: 'Best friends forever 👫', alt: 'School friends' },
+        { id: 37, src: `${process.env.PUBLIC_URL}/images/school/b (24).jpg`, caption: 'Graduation day pride 🎓', alt: 'Graduation ceremony' },
+
       ]
     },
     {
@@ -64,10 +89,42 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
       emoji: '🌟',
       gradient: 'from-purple-200 via-pink-200 to-red-200',
       photos: [
-        { id: 9, src: '/images/teen1.jpg', caption: 'Road trip madness �', alt: 'Road trip with friends' },
-        { id: 10, src: '/images/teen2.jpg', caption: 'Prom night magic ✨', alt: 'Prom night' },
-        { id: 11, src: '/images/teen3.jpg', caption: 'Concert memories 🎵', alt: 'At a concert' },
-        { id: 12, src: '/images/teen4.jpg', caption: 'Late night adventures 🌙', alt: 'Night out with friends' },
+        { id: 38, src: `${process.env.PUBLIC_URL}/images/teenage/cde (1).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 39, src: `${process.env.PUBLIC_URL}/images/teenage/cde (2).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 40, src: `${process.env.PUBLIC_URL}/images/teenage/cde (3).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 41, src: `${process.env.PUBLIC_URL}/images/teenage/cde (4).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 42, src: `${process.env.PUBLIC_URL}/images/teenage/cde (5).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 43, src: `${process.env.PUBLIC_URL}/images/teenage/cde (6).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 44, src: `${process.env.PUBLIC_URL}/images/teenage/cde (7).png`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 45, src: `${process.env.PUBLIC_URL}/images/teenage/cde (8).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 46, src: `${process.env.PUBLIC_URL}/images/teenage/cde (9).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 47, src: `${process.env.PUBLIC_URL}/images/teenage/cde (10).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 48, src: `${process.env.PUBLIC_URL}/images/teenage/cde (11).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 49, src: `${process.env.PUBLIC_URL}/images/teenage/cde (12).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 50, src: `${process.env.PUBLIC_URL}/images/teenage/cde (13).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 51, src: `${process.env.PUBLIC_URL}/images/teenage/cde (14).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 52, src: `${process.env.PUBLIC_URL}/images/teenage/cde (15).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 53, src: `${process.env.PUBLIC_URL}/images/teenage/cde (16).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 54, src: `${process.env.PUBLIC_URL}/images/teenage/cde (17).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 55, src: `${process.env.PUBLIC_URL}/images/teenage/cde (18).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 56, src: `${process.env.PUBLIC_URL}/images/teenage/cde (19).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 57, src: `${process.env.PUBLIC_URL}/images/teenage/cde (20).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 58, src: `${process.env.PUBLIC_URL}/images/teenage/cde (21).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 59, src: `${process.env.PUBLIC_URL}/images/teenage/cde (22).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 60, src: `${process.env.PUBLIC_URL}/images/teenage/cde (23).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 61, src: `${process.env.PUBLIC_URL}/images/teenage/cde (24).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 62, src: `${process.env.PUBLIC_URL}/images/teenage/cde (25).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 63, src: `${process.env.PUBLIC_URL}/images/teenage/cde (26).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 64, src: `${process.env.PUBLIC_URL}/images/teenage/cde (27).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 65, src: `${process.env.PUBLIC_URL}/images/teenage/cde (28).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 66, src: `${process.env.PUBLIC_URL}/images/teenage/cde (29).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 67, src: `${process.env.PUBLIC_URL}/images/teenage/cde (30).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 68, src: `${process.env.PUBLIC_URL}/images/teenage/cde (31).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 69, src: `${process.env.PUBLIC_URL}/images/teenage/cde (32).jpg`, caption: 'Growing Up', alt: 'Image description' },
+        { id: 70, src: `${process.env.PUBLIC_URL}/images/teenage/cde (33).jpg`, caption: 'New Memories', alt: 'Image description' },
+        { id: 71, src: `${process.env.PUBLIC_URL}/images/teenage/cde (34).jpg`, caption: 'Unforgettable Moments', alt: 'Image description' },
+        { id: 72, src: `${process.env.PUBLIC_URL}/images/teenage/cde (35).jpg`, caption: 'Teenage Dreams', alt: 'Image description' },
+        { id: 73, src: `${process.env.PUBLIC_URL}/images/teenage/cde (36).jpg`, caption: 'Growing Up', alt: 'Image description' },
       ]
     },
     {
@@ -77,11 +134,35 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
       emoji: '💝',
       gradient: 'from-blue-200 via-indigo-200 to-purple-200',
       photos: [
-        { id: 13, src: '/images/recent1.jpg', caption: 'That amazing trip 😭', alt: 'Recent travel' },
-        { id: 14, src: '/images/recent2.jpg', caption: 'Best day ever! �', alt: 'Perfect day' },
-        { id: 15, src: '/images/recent3.jpg', caption: 'Can\'t stop laughing 😂', alt: 'Funny moment' },
-        { id: 16, src: '/images/recent4.jpg', caption: 'Perfect moment ✨', alt: 'Beautiful memory' },
-      ]
+        { id: 74, src: `${process.env.PUBLIC_URL}/images/recent/r (1).jpg`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 75, src: `${process.env.PUBLIC_URL}/images/recent/r (2).jpg`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 76, src: `${process.env.PUBLIC_URL}/images/recent/r (3).jpg`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 77, src: `${process.env.PUBLIC_URL}/images/recent/r (4).png`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        { id: 78, src: `${process.env.PUBLIC_URL}/images/recent/r (5).jpeg`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 79, src: `${process.env.PUBLIC_URL}/images/recent/r (6).jpg`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 80, src: `${process.env.PUBLIC_URL}/images/recent/r (7).jpg`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 81, src: `${process.env.PUBLIC_URL}/images/recent/r (8).png`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        { id: 82, src: `${process.env.PUBLIC_URL}/images/recent/r (9).jpg`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 83, src: `${process.env.PUBLIC_URL}/images/recent/r (10).jpg`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 84, src: `${process.env.PUBLIC_URL}/images/recent/r (11).jpg`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 85, src: `${process.env.PUBLIC_URL}/images/recent/r (12).jpg`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        { id: 86, src: `${process.env.PUBLIC_URL}/images/recent/r (13).jpg`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 87, src: `${process.env.PUBLIC_URL}/images/recent/r (14).jpg`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 88, src: `${process.env.PUBLIC_URL}/images/recent/r (15).jpg`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 89, src: `${process.env.PUBLIC_URL}/images/recent/r (16).jpg`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        { id: 90, src: `${process.env.PUBLIC_URL}/images/recent/r (17).png`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 91, src: `${process.env.PUBLIC_URL}/images/recent/r (18).png`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 92, src: `${process.env.PUBLIC_URL}/images/recent/r (19).png`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 93, src: `${process.env.PUBLIC_URL}/images/recent/r (20).jpg`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        { id: 94, src: `${process.env.PUBLIC_URL}/images/recent/r (21).png`, caption: 'Memories!', alt: 'Recent travel' },
+        { id: 95, src: `${process.env.PUBLIC_URL}/images/recent/r (22).png`, caption: 'Celebrating life!', alt: 'Celebration moment' },
+        { id: 96, src: `${process.env.PUBLIC_URL}/images/recent/r (23).png`, caption: 'Family time!', alt: 'Family gathering' },
+        { id: 97, src: `${process.env.PUBLIC_URL}/images/recent/r (24).jpg`, caption: 'Nature walks!', alt: 'Nature exploration' },
+        
+
+        
+
+            ]
     }
   ];
 
@@ -199,49 +280,36 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                       <div className="relative rounded-2xl overflow-hidden shadow-lg bg-white p-4 hover:shadow-2xl transition-shadow duration-300">
                         {/* Actual Image or Placeholder */}
                         <div className="relative rounded-xl overflow-hidden">
-                          {photo.src.includes('childhood1.jpeg') ? (
-                            <>
-                              <img
-                                src={photo.src}
-                                alt={photo.alt}
-                                className="w-full h-64 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
-                                onLoad={() => console.log('Gallery image loaded successfully:', photo.src)}
-                                onError={(e) => {
-                                  console.error('Gallery image failed to load:', photo.src);
-                                  console.error('Full error:', e);
-                                  e.currentTarget.style.display = 'none';
-                                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                                  if (fallback) {
-                                    fallback.style.display = 'flex';
-                                  }
-                                }}
-                              />
-                              <div
-                                className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
-                                style={{ display: 'none' }}
-                              >
-                                <motion.span 
-                                  className="text-4xl z-10"
-                                  whileHover={{ scale: 1.2, rotate: 5 }}
-                                  transition={{ type: "spring", stiffness: 300 }}
-                                >
-                                  📸
-                                </motion.span>
-                              </div>
-                            </>
-                          ) : (
-                            <div
-                              className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
+                          <img
+                            src={photo.src}
+                            alt={photo.alt}
+                            className="w-full h-64 object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                            onLoad={() => console.log('Gallery image loaded successfully:', photo.src)}
+                            onError={(e) => {
+                              console.error('Gallery image failed to load:', photo.src);
+                              console.error('Full error:', e);
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (fallback) {
+                                fallback.style.display = 'flex';
+                              }
+                            }}
+                          />
+                          <div
+                            className={`w-full h-64 bg-gradient-to-br ${section.gradient} rounded-xl flex items-center justify-center relative overflow-hidden`}
+                            style={{ display: 'none' }}
+                          >
+                            <motion.span 
+                              className="text-4xl z-10"
+                              whileHover={{ scale: 1.2, rotate: 5 }}
+                              transition={{ type: "spring", stiffness: 300 }}
                             >
-                              <motion.span 
-                                className="text-4xl z-10"
-                                whileHover={{ scale: 1.2, rotate: 5 }}
-                                transition={{ type: "spring", stiffness: 300 }}
-                              >
-                                📸
-                              </motion.span>
+                              📸
+                            </motion.span>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <p className="text-gray-600 text-sm font-medium">Image not found</p>
                             </div>
-                          )}
+                          </div>
                           
                           {/* Floating sparkles overlay */}
                           <motion.div
@@ -344,25 +412,23 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {selectedPhoto.src.includes('childhood1.jpeg') ? (
-                      <img
-                        src={selectedPhoto.src}
-                        alt={selectedPhoto.alt}
-                        className="w-full max-h-96 object-contain rounded-2xl shadow-lg"
-                        onLoad={() => console.log('Modal image loaded successfully:', selectedPhoto.src)}
-                        onError={(e) => {
-                          console.error('Modal image failed to load:', selectedPhoto.src);
-                          e.currentTarget.style.display = 'none';
-                          const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                          if (fallback) {
-                            fallback.style.display = 'flex';
-                          }
-                        }}
-                      />
-                    ) : null}
+                    <img
+                      src={selectedPhoto.src}
+                      alt={selectedPhoto.alt}
+                      className="w-full max-h-96 object-contain rounded-2xl shadow-lg"
+                      onLoad={() => console.log('Modal image loaded successfully:', selectedPhoto.src)}
+                      onError={(e) => {
+                        console.error('Modal image failed to load:', selectedPhoto.src);
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (fallback) {
+                          fallback.style.display = 'flex';
+                        }
+                      }}
+                    />
                     <div
                       className="w-full h-96 bg-gradient-to-br from-purple-300 via-pink-300 to-indigo-300 rounded-2xl flex items-center justify-center relative overflow-hidden"
-                      style={{ display: selectedPhoto.src.includes('childhood1.jpeg') ? 'none' : 'flex' }}
+                      style={{ display: 'none' }}
                     >
                       <motion.span 
                         className="text-8xl z-10"
@@ -388,6 +454,9 @@ const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onComplete }) => {
                         animate={{ scale: [1, 1.3, 1], x: [0, 10, 0] }}
                         transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
                       />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <p className="text-gray-600 text-lg font-medium">Image not found</p>
+                      </div>
                     </div>
                   </motion.div>
                   
