@@ -22,6 +22,7 @@ const AppContent: React.FC = () => {
   const [currentStage, setCurrentStage] = useState<Stage>('preloader');
   const [key, setKey] = useState(0); // Add key to force re-render countdown
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   useCustomCursor();
   const { playSound, playBackgroundMusic, stopAllAudio } = useAudioManager();
 
@@ -121,9 +122,9 @@ const AppContent: React.FC = () => {
   }, [restartCountdown]);
 
   const stageVariants = {
-    enter: { opacity: 0, scale: 0.8 },
-    center: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 1.1 },
+    enter: { opacity: 0, scale: 0.95, y: 20 },
+    center: { opacity: 1, scale: 1, y: 0 },
+    exit: { opacity: 0, scale: 1.05, y: -20 },
   };
 
   // Stage navigation functions
@@ -135,6 +136,11 @@ const AppContent: React.FC = () => {
     if (currentIndex < stages.length - 1) {
       const nextStage = stages[currentIndex + 1];
       console.log('➡️ Moving from', currentStage, 'to', nextStage);
+      
+      // Trigger transition indicator
+      setIsTransitioning(true);
+      setTimeout(() => setIsTransitioning(false), 600);
+      
       // Add page transition sound effect
       playSound('page-transition', { volume: 0.3 });
       setCurrentStage(nextStage);
@@ -166,6 +172,37 @@ const AppContent: React.FC = () => {
       <ParticleSystem />
       <FloatingElements />
 
+      {/* Page Transition Indicator */}
+      <AnimatePresence>
+        {isTransitioning && (
+          <motion.div
+            className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              className="relative"
+              initial={{ scale: 0.8, rotate: 0 }}
+              animate={{ scale: 1, rotate: 360 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ 
+                scale: { duration: 0.3, ease: [0.34, 1.56, 0.64, 1] },
+                rotate: { duration: 0.6, ease: "easeInOut" }
+              }}
+            >
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 blur-xl opacity-60" />
+              <motion.div
+                className="absolute inset-0 w-16 h-16 rounded-full border-4 border-white/30 border-t-white"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Content */}
       <AnimatePresence mode="wait">
         {/* Stage 0: Audio Preloader */}
@@ -184,7 +221,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <Countdown key={key} targetDate={targetDate} onComplete={goToNextStage} />
           </motion.div>
@@ -198,7 +235,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <EntryAnimation onComplete={goToNextStage} onReset={restartCountdown} birthDate={birthDate} />
           </motion.div>
@@ -212,7 +249,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <MessageScroll onComplete={goToNextStage} />
           </motion.div>
@@ -226,7 +263,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <WordCloud onComplete={goToNextStage} />
           </motion.div>
@@ -240,7 +277,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <BalloonGame onComplete={goToNextStage} />
           </motion.div>
@@ -254,7 +291,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <CakeCut onComplete={goToNextStage} />
           </motion.div>
@@ -268,7 +305,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <MemoryGallery onComplete={goToNextStage} />
           </motion.div>
@@ -282,7 +319,7 @@ const AppContent: React.FC = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <FinalThankYou onRestart={restartExperience} />
           </motion.div>

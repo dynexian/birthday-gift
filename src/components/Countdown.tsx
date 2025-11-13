@@ -218,11 +218,10 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
             initial={{ opacity: 0, y: 100, rotateX: 90, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
             transition={{ 
-              duration: 1.0, 
-              delay: 1 + index * 0.18,
-              ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuart
+              duration: 0.8, 
+              delay: 1 + index * 0.15,
               type: "spring",
-              stiffness: 120,
+              stiffness: 200,
               damping: 20
             }}
             className={`group relative backdrop-blur-md rounded-3xl p-6 md:p-8 border shadow-2xl min-w-[120px] md:min-w-[140px] transition-all duration-500 ${
@@ -260,10 +259,15 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
                   animate="center"
                   exit="exit"
                   transition={{ 
-                    duration: 0.2, 
-                    ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuart
-                    filter: { duration: 0.15 },
-                    rotateX: { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
+                    duration: 0.4,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
+                    filter: { duration: 0.2 },
+                    rotateX: { 
+                      duration: 0.4, 
+                      ease: [0.16, 1, 0.3, 1] 
+                    }
                   }}
                   className={`countdown-digit absolute font-bold text-3xl md:text-4xl lg:text-5xl ${
                     'text-purple-600'

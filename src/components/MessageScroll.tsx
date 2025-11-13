@@ -314,7 +314,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                   'bg-slate-200'
                 }`}>
                   <motion.div 
-                    className={`h-full rounded-full shadow-inner transition-all duration-500 ${
+                    className={`h-full rounded-full shadow-inner transition-all duration-500 relative overflow-hidden ${
                       'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600'
                     }`}
                     style={{ width: `${((currentMessage + 1) / messages.length) * 100}%` }}
@@ -329,7 +329,15 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                       width: { duration: 0.8, ease: "easeOut" },
                       boxShadow: { duration: 2, repeat: Infinity }
                     }}
-                  />
+                  >
+                    {/* Shimmer effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      style={{ backgroundSize: '200% 100%' }}
+                      animate={{ backgroundPosition: ['0% center', '200% center'] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                    />
+                  </motion.div>
                 </div>
                 
                 {/* Message Counter */}
@@ -351,8 +359,9 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                       : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
                   }`}
-                  whileHover={currentMessage > 0 ? { scale: 1.1 } : {}}
-                  whileTap={currentMessage > 0 ? { scale: 0.95 } : {}}
+                  whileHover={currentMessage > 0 ? { scale: 1.15, rotate: -5 } : {}}
+                  whileTap={currentMessage > 0 ? { scale: 0.9 } : {}}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -363,8 +372,9 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 <motion.button
                   onClick={togglePause}
                   className="p-3 sm:p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-white/20"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   {isPaused ? (
                     <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -386,8 +396,9 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                       : 'bg-white text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg border border-purple-200'
                   }`}
-                  whileHover={currentMessage < messages.length - 1 ? { scale: 1.1 } : {}}
-                  whileTap={currentMessage < messages.length - 1 ? { scale: 0.95 } : {}}
+                  whileHover={currentMessage < messages.length - 1 ? { scale: 1.15, rotate: 5 } : {}}
+                  whileTap={currentMessage < messages.length - 1 ? { scale: 0.9 } : {}}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
