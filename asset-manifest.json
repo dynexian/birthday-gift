@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/birthday-gift/static/css/main.dc3c44dd.css",
-    "main.js": "/birthday-gift/static/js/main.cb9242d6.js",
+    "main.css": "/birthday-gift/static/css/main.83c838f8.css",
+    "main.js": "/birthday-gift/static/js/main.8b10c9bd.js",
     "index.html": "/birthday-gift/index.html",
-    "main.dc3c44dd.css.map": "/birthday-gift/static/css/main.dc3c44dd.css.map",
-    "main.cb9242d6.js.map": "/birthday-gift/static/js/main.cb9242d6.js.map"
+    "main.83c838f8.css.map": "/birthday-gift/static/css/main.83c838f8.css.map",
+    "main.8b10c9bd.js.map": "/birthday-gift/static/js/main.8b10c9bd.js.map"
   },
   "entrypoints": [
-    "static/css/main.dc3c44dd.css",
-    "static/js/main.cb9242d6.js"
+    "static/css/main.83c838f8.css",
+    "static/js/main.8b10c9bd.js"
   ]
 }
