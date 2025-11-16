@@ -262,7 +262,7 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
           }}>
             Wishing you the best on your special day!<br />
             <span className="text-lg md:text-xl font-normal opacity-90">
-              May your journey ahead be as stellar, grounded and inspiring as you've always been to us✨
+              May your journey ahead be as lovely and joyful as you've always been to me✨
             </span>
           </p>
         </motion.div>
