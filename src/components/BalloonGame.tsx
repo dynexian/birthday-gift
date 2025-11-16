@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useAudioManager } from '../hooks/useAudio';
 
@@ -10,8 +10,16 @@ interface BalloonGameProps {
 const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
   const [poppedBalloons, setPoppedBalloons] = useState<Set<number>>(new Set());
   const [showCompletion, setShowCompletion] = useState(false);
-  const targetPopCount = 8;
+  const [showGameIntro, setShowGameIntro] = useState(true);
+  const targetPopCount = 22;
+  const totalBalloons = 100;
   const { playSound } = useAudioManager();
+  
+  // Hide game intro after 3 seconds
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowGameIntro(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const balloonColors = [
     '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
@@ -105,15 +113,16 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
     }
   };
 
-  const balloons = Array.from({ length: 12 }).map((_, idx) => {
+  const balloons = Array.from({ length: totalBalloons }).map((_, idx) => {
     const isPopped = poppedBalloons.has(idx);
     const balloonColor = balloonColors[idx % balloonColors.length];
     
     // Create a unique seed for consistent positioning
     const positionSeed = idx * 123.456; // Deterministic random
-    const leftPosition = (idx * 7 + 10 + (Math.sin(positionSeed) * 5 + 5));
-    const animationDuration = 5 + (Math.sin(positionSeed * 2) * 1.5 + 1.5); // 3.5-6.5 seconds
-    const animationDelay = (Math.sin(positionSeed * 3) * 1 + 1); // 0-2 seconds
+    // Better spacing for 100 balloons - spread across full width with some randomness
+    const leftPosition = ((idx % 100) * 1 + (Math.sin(positionSeed) * 3 + 3)); // 0-100% with small variations
+    const animationDuration = 8 + (Math.sin(positionSeed * 2) * 3 + 3); // 8-14 seconds to rise
+    const animationDelay = (Math.sin(positionSeed * 3) * 5 + 5); // 0-10 seconds delay
     
     return (
       <motion.div
@@ -125,9 +134,9 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
           zIndex: 20,
           pointerEvents: isPopped ? 'none' : 'auto',
         }}
-        initial={{ opacity: 1 }}
+        initial={{ opacity: 1, y: 0 }}
         animate={{
-          y: [0, -window.innerHeight - 200],
+          y: isPopped ? 0 : -window.innerHeight - 200,
           opacity: isPopped ? 0 : 1,
           scale: isPopped ? 0 : 1,
         }}
@@ -142,6 +151,7 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
             ease: 'linear',
             repeat: isPopped ? 0 : Infinity,
             delay: animationDelay,
+            repeatDelay: 0, // Immediately restart from bottom
           },
           opacity: {
             duration: isPopped ? 0.3 : 0,
@@ -239,6 +249,47 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-sky-200 via-blue-100 to-purple-200">
+      {/* Party Game Introduction */}
+      <AnimatePresence>
+        {showGameIntro && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-900/90 via-purple-900/90 to-pink-900/90 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              className="text-center px-8"
+              initial={{ scale: 0.5, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 1.5, opacity: 0, rotate: 10 }}
+              transition={{ duration: 0.8, type: "spring" }}
+            >
+              <motion.div
+                className="text-9xl mb-6"
+                animate={{ 
+                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.3, 1]
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                🎈
+              </motion.div>
+              <h2 className="text-6xl md:text-7xl font-bold text-white mb-4">
+                Party Time!
+              </h2>
+              <p className="text-3xl text-white/90 mb-2">
+                Pop {targetPopCount} balloons! 🎯
+              </p>
+              <p className="text-xl text-white/70">
+                Let's make some noise! 🎊
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {/* Stable Background Clouds */}
       {cloudProperties.map((cloud, i) => (
         <motion.div
@@ -348,27 +399,49 @@ const BalloonGame: React.FC<BalloonGameProps> = ({ onComplete }) => {
         {/* Instructions */}
         <div className="mb-4 sm:mb-6 md:mb-8">
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold text-purple-800 mb-2 sm:mb-3 md:mb-4 drop-shadow-lg leading-tight text-center">
-          🎈Pop the Balloons!🎈
+          🎈 Party Balloon Game! 🎈
           </h2>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-purple-600 drop-shadow-md font-medium text-center">
-            Click balloons as they float! ({poppedBalloons.size}/{targetPopCount})
-          </p>
-        </div>
-        
-        {/* Progress bar */}
-        <motion.div
-          className="w-48 sm:w-56 md:w-64 lg:w-72 h-3 sm:h-4 bg-white/30 rounded-full overflow-hidden shadow-lg backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
+          
+          {/* Party Scoreboard */}
           <motion.div
-            className="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full shadow-inner"
-            initial={{ width: 0 }}
-            animate={{ width: `${(poppedBalloons.size / targetPopCount) * 100}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </motion.div>
+            className="mt-4 bg-gradient-to-r from-yellow-100 to-pink-100 border-4 border-yellow-300 rounded-2xl px-6 py-3 shadow-xl"
+            animate={{
+              boxShadow: [
+                "0 10px 30px rgba(251, 191, 36, 0.3)",
+                "0 10px 50px rgba(251, 191, 36, 0.6)",
+                "0 10px 30px rgba(251, 191, 36, 0.3)"
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-3xl">🎯</span>
+              <div className="text-center">
+                <div className="text-4xl font-black text-purple-700">
+                  {poppedBalloons.size} / {targetPopCount}
+                </div>
+                <div className="text-sm font-semibold text-purple-600">
+                  Balloons Popped!
+                </div>
+              </div>
+              <span className="text-3xl">
+                {poppedBalloons.size >= targetPopCount ? '🏆' : '�'}
+              </span>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="mt-3 w-full bg-white/50 rounded-full h-3 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ 
+                  width: `${(poppedBalloons.size / targetPopCount) * 100}%`,
+                }}
+                transition={{ duration: 0.5, type: "spring" }}
+              />
+            </div>
+          </motion.div>
+        </div>
         </motion.div>
       </div>
       

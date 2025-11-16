@@ -26,12 +26,12 @@ const AppContent: React.FC = () => {
   useCustomCursor();
   const { playSound, playBackgroundMusic, stopAllAudio } = useAudioManager();
 
-  // Set target date for countdown (120 seconds from now for demo)
+  // Set birth date for age calculation in EntryAnimation (Nov 16, 2003)
+  const birthDate = new Date('2003-11-16'); // Avni's birthdate: November 16, 2003
+  
+  // Set target date for initial 10-second countdown
   const targetDate = new Date();
-  targetDate.setSeconds(targetDate.getSeconds() + 10); // 120 seconds from now for demo
-
-  // Set birth date for age calculation (you can customize this)
-  const birthDate = new Date('2003-08-10'); // Example: August 4, 1995 - customize this date!
+  targetDate.setSeconds(targetDate.getSeconds() + 10); // 10 seconds from now
 
   // Background music management based on current stage
   useEffect(() => {

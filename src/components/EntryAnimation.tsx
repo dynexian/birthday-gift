@@ -9,6 +9,24 @@ interface EntryAnimationProps {
 
 const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, birthDate }) => {
   const [currentTime, setCurrentTime] = React.useState(new Date());
+  const [showSurprise, setShowSurprise] = React.useState(false);
+  const [curtainOpen, setCurtainOpen] = React.useState(false);
+  
+  // Dramatic entrance sequence
+  React.useEffect(() => {
+    // Open curtains after 1 second
+    const curtainTimer = setTimeout(() => setCurtainOpen(true), 1000);
+    // Show surprise banner after curtains open
+    const surpriseTimer = setTimeout(() => setShowSurprise(true), 2000);
+    // Hide surprise banner after 3 seconds
+    const hideSurpriseTimer = setTimeout(() => setShowSurprise(false), 5000);
+    
+    return () => {
+      clearTimeout(curtainTimer);
+      clearTimeout(surpriseTimer);
+      clearTimeout(hideSurpriseTimer);
+    };
+  }, []);
 
   // Update current time every second for live age calculation
   React.useEffect(() => {
@@ -69,6 +87,72 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
 
   return (
     <div className="relative z-50">
+      {/* Curtain Opening Effect - Left and Right */}
+      <AnimatePresence>
+        {!curtainOpen && (
+          <>
+            {/* Left Curtain */}
+            <motion.div
+              className="fixed inset-y-0 left-0 w-1/2 bg-gradient-to-r from-purple-900 via-purple-700 to-purple-600 z-50 shadow-2xl"
+              initial={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-30" />
+            </motion.div>
+            
+            {/* Right Curtain */}
+            <motion.div
+              className="fixed inset-y-0 right-0 w-1/2 bg-gradient-to-l from-pink-900 via-pink-700 to-pink-600 z-50 shadow-2xl"
+              initial={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-30" />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      
+      {/* SURPRISE Banner Drop - appears and disappears */}
+      <AnimatePresence>
+        {showSurprise && (
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center z-40 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              className="pointer-events-auto"
+              initial={{ y: -200, opacity: 0, scale: 0.5, rotateX: -90 }}
+              animate={{ y: 0, opacity: 1, scale: 1, rotateX: 0 }}
+              exit={{ y: -200, opacity: 0, scale: 0.5, rotateX: 90 }}
+              transition={{ 
+                duration: 1, 
+                type: "spring",
+                stiffness: 200,
+                damping: 15
+              }}
+            >
+              <div className="bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 text-white px-12 py-6 rounded-3xl shadow-2xl border-4 border-white transform rotate-[-2deg]">
+                <motion.h2 
+                  className="text-5xl md:text-7xl font-black tracking-wider"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [-2, 2, -2]
+                  }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                SURPRISE!
+                </motion.h2>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {/* Hero Birthday Greeting - Full Viewport */}
       <motion.div
         className="relative text-center min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8 md:py-12"
@@ -160,7 +244,7 @@ const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete, onReset, bi
             transition={{ duration: 0.8, delay: 1.2 }}
             className="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 bg-clip-text text-transparent"
           >
-            Dear Dhananjay!
+            Dear Avni!
           </motion.span>
         </motion.h1>
 

@@ -20,30 +20,15 @@ const WordCloud: React.FC<WordCloudProps> = ({ onComplete }) => {
   const { playSound } = useAudioManager();
 
   const words: Word[] = [
-  // Personality Traits
+  // Simple, joyful words
   { text: "Kind", color: "#ff6b6b", size: "lg", category: "trait" },
+  { text: "Happy", color: "#ffca28", size: "xl", category: "emotion" },
+  { text: "Sweet", color: "#ffa726", size: "lg", category: "emotion" },
+  { text: "Caring", color: "#66bb6a", size: "lg", category: "emotion" },
+  { text: "Loyal", color: "#26a69a", size: "md", category: "trait" },
+  { text: "Gentle", color: "#ba68c8", size: "md", category: "emotion" },
+  { text: "Thoughtful", color: "#ff7043", size: "md", category: "trait" },
   { text: "Honest", color: "#4ecdc4", size: "md", category: "trait" },
-  { text: "Calm", color: "#42a5f5", size: "md", category: "trait" },
-  { text: "Thoughtful", color: "#ff7043", size: "lg", category: "trait" },
-  { text: "Disciplined", color: "#ab47bc", size: "lg", category: "trait" },
-  { text: "Soft-spoken", color: "#ba68c8", size: "md", category: "trait" },
-  { text: "Grounded", color: "#26c6da", size: "md", category: "trait" },
-  { text: "Loyal", color: "#26a69a", size: "lg", category: "trait" },
-  { text: "Observant", color: "#29b6f6", size: "md", category: "trait" },
-  { text: "Respectful", color: "#5c6bc0", size: "md", category: "trait" },
-
-  // Emotions & Feelings
-  { text: "Caring", color: "#ffca28", size: "lg", category: "emotion" },
-  { text: "Sincere", color: "#66bb6a", size: "md", category: "emotion" },
-  { text: "Gentle", color: "#ffa726", size: "md", category: "emotion" },
-  { text: "Real", color: "#ef5350", size: "md", category: "emotion" },
-  { text: "Quiet", color: "#90a4ae", size: "md", category: "emotion" },
-
-  // Strengths & Qualities
-  { text: "Reliable", color: "#ec407a", size: "lg", category: "strength" },
-  { text: "Patient", color: "#9c27b0", size: "md", category: "strength" },
-  { text: "Balanced", color: "#26a69a", size: "md", category: "strength" },
-  { text: "Emotionally strong", color: "#8d6e63", size: "lg", category: "strength" },
 ];
 
 const categories = [
@@ -60,8 +45,20 @@ const categories = [
   }, []);
 
   const handleWordClick = (index: number) => {
-    playSound('button-click', { volume: 0.5 });
+    playSound('sparkle', { volume: 0.5 });
     setInteractedWords(prev => new Set(Array.from(prev).concat(index)));
+    
+    // Confetti burst on word click - toast effect!
+    import('canvas-confetti').then(confetti => {
+      confetti.default({
+        particleCount: 30,
+        spread: 50,
+        origin: { y: 0.6 },
+        colors: ['#FFD700', '#FFA500', '#FF69B4'],
+        gravity: 0.8,
+        scalar: 0.8,
+      });
+    });
   };
 
   const getSizeClasses = () => {
@@ -121,7 +118,7 @@ const categories = [
             }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            ✨ Some words that describe you✨
+            ✨ You Are Amazing! ✨
           </motion.h1>
           
           <motion.p
@@ -130,7 +127,7 @@ const categories = [
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            Discover the beautiful qualities that make you unique through my eyes. Each word is a reflection of your amazing personality, emotions, and strengths. Click on any word to interact and see how it resonates with you!
+            Click the words to see sparkles! 🌟
           </motion.p>
         </motion.div>
 

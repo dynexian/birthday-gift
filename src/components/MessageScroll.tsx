@@ -10,33 +10,31 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
   const [currentMessage, setCurrentMessage] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [showEnvelope, setShowEnvelope] = useState(true);
   const { playSound } = useAudioManager();
+  
+  // Open envelope animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowEnvelope(false);
+      playSound('page-transition', { volume: 0.3 });
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [playSound]);
 
   const messages = [
-    "On this special day, we celebrate not just your birth... 🌟",
-    "But the incredible person you've become,",
-    "The joy you bring to everyone around you, 😊",
-    "Your kindness, your laughter, your beautiful spirit, ✨",
-    "The way you light up every room you enter, 💫",
-    "Your strength in facing challenges, 💪",
-    "Your compassion for others, ❤️",
-    "The memories we've shared together, 📸",
-    "And all the amazing moments yet to come! 🌈",
-    "Today, we honor you and all that you are. 🙏",
-    "Happy Birthday! 🎉🎂✨",
-    "Wishing you a year filled with love, laughter, and adventure,",
-    "May your dreams take flight and your heart be light,",
-    "Here's to new beginnings and cherished memories,",
-    "To the laughter that fills your days,",
-    "To the love that surrounds you always,",
-    "And to the magic that life has in store for you,",
-    "May this year be your best one yet,",
-    "Filled with moments that make your heart sing, 🎶",
-    "Hoping that your love life becomes fruitful this upcoming year 🌹",
-    "Last one was from Swikruti...hehe",
+    "I hate you too\nJab tum khana nhi khati\nJab tum apna khayal nhi rakhti\nJab tum bimar hojati ho",
+    "But\njab tum apni hatho ki ungliyon se kuch na harkat krti rehti ho\nJab tum bolti ho ki tum moti hogyi\nJab tum mujhe gudgudi krti ho\nJab tum mere upar apna sar rakhti ho\nJab tum khi khi khi khi krke hansti ho",
+    "Tab bss muskurane ka mnn karta hai\nTumhe aur zor se pakadne ka mnn krta hai\nTumhe khana khilane ka mnn krta hai\nTumhari fikar krne ka mnn karta hai\nTum kitna khas ho mere liye, btane ka mnn krta hai",
+    "Thank you so much\nMeri zindagi mai aane k liye\nMujhpe trust krne k liye\nMera care krne k liye\nMere sath itni sari baatein share krne k liye\nMere liye fikar krne k liye\nMujhe dantne k liye\nMujhe pareshan krne k liye",
+    "I Miss you so so so so so so much\nKaash avi tum mere sath hoti\nKaash Hum Tumhara birthday mana paate sath mai\nKaash kal hum mil pate",
+    "Mujhe nhi pta tha ki\nTum mere liye itna important bnn jaogi\nMujhe itna badal dogi\nMere life ko itna better bana dogi\nMujhe insaan bana dogi",
+    "Last mai bss itna kehna chahta hun ki\nI am very very happy that you are with me.",
+    "Jaanta hun ki mai tumhe gussa dila deta hun\nKvi kvi khud gussa hojata hun\nMeri koi baat ka bura laga ho to please maaf kr dena",
+    "Happy Birthday!!!\nI love you ❤️",
   ];
 
-  // Auto-advance messages every 3 seconds with pause control
+  // Auto-advance messages every 6 seconds with pause control
   useEffect(() => {
     if (isPaused) return;
     
@@ -50,7 +48,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         playSound('page-transition', { volume: 0.2 });
         return prev + 1;
       });
-    }, 3000);
+    }, 6000);
 
     return () => clearInterval(timer);
   }, [messages.length, playSound, isPaused]);
@@ -137,9 +135,95 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
         ))}
       </div>
 
+      {/* Envelope Opening Animation */}
+      <AnimatePresence>
+        {showEnvelope && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-900/50 via-pink-900/50 to-indigo-900/50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              className="relative"
+              initial={{ scale: 0.5, rotateY: -180 }}
+              animate={{ scale: 1, rotateY: 0 }}
+              exit={{ scale: 1.5, opacity: 0 }}
+              transition={{ duration: 1, type: "spring" }}
+            >
+              {/* Envelope */}
+              <div className="relative w-80 h-56 md:w-96 md:h-64">
+                {/* Envelope body */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-pink-200 to-purple-200 rounded-lg shadow-2xl border-4 border-white"
+                  animate={{ 
+                    boxShadow: [
+                      "0 25px 50px rgba(236, 72, 153, 0.3)",
+                      "0 25px 80px rgba(236, 72, 153, 0.6)",
+                      "0 25px 50px rgba(236, 72, 153, 0.3)"
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                
+                {/* Envelope flap - opening */}
+                <motion.div
+                  className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-purple-300 to-pink-300 border-4 border-white shadow-lg"
+                  style={{
+                    clipPath: 'polygon(0 0, 50% 60%, 100% 0)',
+                    transformOrigin: 'top center'
+                  }}
+                  animate={{ 
+                    rotateX: [0, -120],
+                    y: [0, -20]
+                  }}
+                  transition={{ duration: 1.5, delay: 0.5 }}
+                />
+                
+                {/* Card peeking out */}
+                <motion.div
+                  className="absolute top-8 left-1/2 transform -translate-x-1/2 w-64 h-40 bg-white rounded-lg shadow-xl flex items-center justify-center"
+                  initial={{ y: 0 }}
+                  animate={{ y: [-20, -60] }}
+                  transition={{ duration: 1, delay: 1 }}
+                >
+                  <div className="text-center p-4">
+                    <p className="text-3xl mb-2">💌</p>
+                    <p className="text-lg font-semibold text-purple-600">Birthday Messages</p>
+                    <p className="text-sm text-gray-500 mt-2">Opening...</p>
+                  </div>
+                </motion.div>
+                
+                {/* Sparkles around envelope */}
+                {[...Array(12)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 bg-yellow-300 rounded-full"
+                    style={{
+                      left: `${50 + Math.cos(i * 30 * Math.PI / 180) * 150}px`,
+                      top: `${50 + Math.sin(i * 30 * Math.PI / 180) * 100}px`,
+                    }}
+                    animate={{
+                      scale: [0, 1, 0],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      delay: i * 0.1,
+                      repeat: Infinity,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Instructions - Full Width Top Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 z-20 w-full flex items-center justify-center py-4 sm:py-5 md:py-6 px-4 pt-6 sm:pt-8 md:pt-10"
+        className="fixed top-0 left-0 right-0 z-20 w-full flex items-center justify-center py-5 sm:py-6 md:py-7 lg:py-8 px-4 pt-8 sm:pt-10 md:pt-12 lg:pt-14"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: isComplete ? 0 : 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -181,8 +265,8 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10 pt-20 sm:pt-22 md:pt-24 pb-24 sm:pb-28 md:pb-32">
-        <div className="text-center max-w-5xl w-full mx-auto">
+      <div className="h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10 pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-32 sm:pb-36 md:pb-40 lg:pb-44">
+        <div className="text-center max-w-6xl w-full mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -196,7 +280,7 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
           >
             {/* Enhanced Message Container with Advanced Visual Effects */}
             <motion.div
-              className={`relative backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20 shadow-2xl border transition-all duration-700 mx-2 sm:mx-4 md:mx-6 ${
+              className={`relative backdrop-blur-xl rounded-3xl p-8 sm:p-10 md:p-14 lg:p-20 xl:p-24 shadow-2xl border transition-all duration-700 mx-2 sm:mx-4 md:mx-6 ${
                 'bg-gradient-to-br from-white/90 via-white/85 to-white/95 border-white/60'
               }`}
               animate={{ 
@@ -231,11 +315,11 @@ const MessageScroll: React.FC<MessageScrollProps> = ({ onComplete }) => {
                 'border-purple-300'
               }`}></div>
               
-              <div className="relative min-h-[130px] sm:min-h-[150px] md:min-h-[170px] lg:min-h-[190px] xl:min-h-[210px] flex items-center justify-center overflow-hidden">
+              <div className="relative min-h-[450px] sm:min-h-[400px] md:min-h-[480px] lg:min-h-[560px] xl:min-h-[640px] flex items-center justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={currentMessage}
-                    className={`text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl leading-relaxed font-medium break-words px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-3 md:py-4 transition-colors duration-500 absolute w-full ${
+                    className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-loose font-medium break-words px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 lg:py-8 transition-colors duration-500 absolute w-full whitespace-pre-line ${
                       'text-slate-800 drop-shadow-md'
                     }`}
                     style={{

@@ -104,7 +104,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
               repeatType: "reverse",
             }}
           >
-            With Love
+            Happy Birthday! 🎂
           </motion.h1>
         </motion.div>
 
@@ -120,7 +120,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
             }`}
             whileHover={{ scale: 1.05 }}
           >
-            Thank you for being a part of my world.
+            I hope you enjoyed this little surprise! 🎁
           </motion.p>
           
           <motion.p
@@ -129,7 +129,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
             }`}
             whileHover={{ scale: 1.05 }}
           >
-            This was made just for you. 💗
+            I made this just for you, with all my heart. 💗
           </motion.p>
         </motion.div>
 
@@ -155,7 +155,7 @@ const FinalThankYou: React.FC<FinalThankYouProps> = ({ onRestart }) => {
               backgroundSize: "200% 200%",
             }}
           >
-            — from Shubham ✨
+            — Made with Love by Dhananjay ✨
           </motion.p>
         </motion.div>
 

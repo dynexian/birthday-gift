@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountdown } from '../hooks/useCountdown';
 import { useAudioManager } from '../hooks/useAudio';
@@ -12,6 +12,13 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
   const { days, hours, minutes, seconds, isExpired } = useCountdown(targetDate);
   const { playSound } = useAudioManager();
   const lastSecondRef = useRef<number>(seconds);
+  const [showPartyPrep, setShowPartyPrep] = useState(false);
+  
+  // Show party preparation elements after 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPartyPrep(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Play tick sound on second change (only when < 10 seconds)
   useEffect(() => {
@@ -134,11 +141,65 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center space-y-12 px-4 relative overflow-hidden">
-      {/* Background floating elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(30)].map((_, i) => (
+      {/* Party preparation background - balloons inflating, decorations appearing */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Floating balloons rising up */}
+        {showPartyPrep && [...Array(8)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`balloon-${i}`}
+            className="absolute text-5xl md:text-6xl"
+            style={{
+              left: `${10 + i * 12}%`,
+              bottom: '-10%',
+            }}
+            initial={{ y: 0, opacity: 0, scale: 0.3, rotate: 0 }}
+            animate={{ 
+              y: -800, 
+              opacity: [0, 1, 1, 0.5, 0],
+              scale: [0.3, 1, 1.1, 1, 0.8],
+              rotate: [0, 5, -5, 3, 0],
+              x: [0, Math.random() * 40 - 20, 0]
+            }}
+            transition={{
+              duration: 12 + Math.random() * 6,
+              repeat: Infinity,
+              delay: i * 0.8,
+              ease: "easeOut"
+            }}
+          >
+            {['🎈', '🎉', '🎊', '🎁'][i % 4]}
+          </motion.div>
+        ))}
+        
+        {/* Sparkles and confetti preparing */}
+        {showPartyPrep && [...Array(20)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            className={`absolute w-3 h-3 rounded-full ${
+              'bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300'
+            }`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              scale: [0, 1.5, 0],
+              opacity: [0, 1, 0],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 4,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+        
+        {/* Floating decorations */}
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={`deco-${i}`}
             className={`absolute w-4 h-4 rounded-full ${
               'bg-gradient-to-r from-purple-200/30 to-pink-200/30'
             }`}
@@ -181,7 +242,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
           }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          🕐 Countdown to Your Special Moment 🕐
+          ✨ The Party Starts In... ✨
         </motion.h1>
         <motion.p 
           className={`text-xl md:text-2xl lg:text-3xl font-medium max-w-3xl mx-auto leading-relaxed ${
@@ -191,8 +252,39 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, onComplete }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          The celebration begins in...
+          {showPartyPrep ? "🎈 Decorations are ready... Guests arriving... 🎉" : "Getting everything ready for you..."}
         </motion.p>
+        
+        {/* Party prep status indicator */}
+        {showPartyPrep && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-6 flex items-center gap-3 justify-center"
+          >
+            <motion.div
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-100 to-teal-100 border border-green-200"
+              animate={{
+                boxShadow: [
+                  "0 0 10px rgba(16, 185, 129, 0.3)",
+                  "0 0 20px rgba(16, 185, 129, 0.6)",
+                  "0 0 10px rgba(16, 185, 129, 0.3)"
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <motion.span
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="text-xl"
+              >
+                ✨
+              </motion.span>
+              <span className="text-sm font-semibold text-green-700">Party preparations in progress...</span>
+            </motion.div>
+          </motion.div>
+        )}
       </motion.div>
       
       {/* Countdown Timer */}
